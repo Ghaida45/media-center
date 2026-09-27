@@ -1,0 +1,41 @@
+.role-switcher-page {
+  padding-top: var(--dgp-spacing-3xl);
+  padding-bottom: var(--dgp-spacing-6xl);
+}
+
+.role-switcher-hint {
+  color: var(--dgp-neutral-500);
+  margin-top: var(--dgp-spacing-sm);
+  margin-bottom: var(--dgp-spacing-2xl);
+}
+
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--dgp-spacing-xl);
+}
+
+@media (max-width: 900px) {
+  .role-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dgp-spacing-md);
+  padding: var(--dgp-spacing-2xl);
+  border: 1px solid var(--dgp-neutral-200);
+  border-radius: var(--dgp-radius-16);
+}
+
+.role-card.active {
+  border-color: var(--dgp-primary-600);
+  background: var(--dgp-primary-25);
+}
+
+.role-card p {
+  color: var(--dgp-neutral-600);
+  flex-grow: 1;
+}

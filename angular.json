@@ -25,7 +25,14 @@
               }
             ],
             "styles": [
+              "node_modules/swiper/swiper-bundle.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "https://dgp.sdaia.gov.sa/ndmoResources/assets/css/styles.css",
+              "https://dgp.sdaia.gov.sa/ndmoResources/assets/css/home.css",
               "src/styles.css"
+            ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
           },
           "configurations": {

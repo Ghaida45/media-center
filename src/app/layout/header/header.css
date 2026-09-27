@@ -1,0 +1,3 @@
+.dgp-header .mainNavbar .header-lang-switcher > ul > li.nav-item > a.nav-link:focus {
+  outline: none !important;
+}

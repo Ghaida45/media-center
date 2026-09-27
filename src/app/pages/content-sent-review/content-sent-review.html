@@ -1,0 +1,59 @@
+<ul class="dgp-breadcrumb">
+    <li>
+        <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center" class="dgp-text-sm">{{ t('header.mediaCenter') }}</a>
+    </li>
+    <li>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ t('review.breadcrumb') }}</a>
+    </li>
+</ul>
+
+<section class="knowledge-page review-page" [attr.dir]="languageService.dir">
+    <div class="dgp-container">
+        <h2 class="dgp-display-lg dgp-weight-semi-bold">
+            {{ t('review.title') }}
+        </h2>
+
+        <div class="review-table-wrapper">
+        <table class="review-table">
+            <thead>
+                <tr>
+                    <th>{{ t('review.colTitle') }}</th>
+                    <th>{{ t('review.colType') }}</th>
+                    <th>{{ t('review.colSender') }}</th>
+                    <th>{{ t('review.colDateSent') }}</th>
+                    <th>{{ t('review.colAction') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of pagedItems; track item.id) {
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.type }}</td>
+                    <td>{{ item.sender }}</td>
+                    <td>{{ formatDate(item.sentDate) }}</td>
+                    <td>
+                        <a [routerLink]="['/media-center/review', item.id]"
+                            class="dgp-button secondry outlined sm">{{ t('review.view') }}</a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="review-pagination">
+            <span class="dgp-text-sm">
+                {{ t('review.showingPrefix') }} {{ rangeStart }} - {{ rangeEnd }} {{ t('review.showingOf') }} {{ items.length }} {{ t('review.showingSuffix') }}
+            </span>
+            <div class="review-pagination-buttons">
+                <button type="button" class="dgp-button secondry outlined sm" [disabled]="currentPage === 1"
+                    (click)="previousPage()">{{ t('review.previous') }}</button>
+                <button type="button" class="dgp-button secondry outlined sm" [disabled]="currentPage === totalPages"
+                    (click)="nextPage()">{{ t('review.next') }}</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>

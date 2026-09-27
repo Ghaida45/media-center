@@ -1,0 +1,44 @@
+@if (article) {
+<ul class="dgp-breadcrumb">
+    <li>
+        <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center" class="dgp-text-sm">{{ t('header.mediaCenter') }}</a>
+    </li>
+    <li>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ article.title }}</a>
+    </li>
+</ul>
+
+<section class="knowledge-page article-page" [attr.dir]="languageService.dir">
+    <div class="dgp-container">
+        <div class="article-meta">
+            <span class="media-tag-pill static" [class]="'tag-' + article.tags[0].toLowerCase()">
+                {{ article.tags[0] }}
+            </span>
+            <div class="media-card-date">
+                <span class="material-symbols-outlined">calendar_today</span>
+                {{ formatDate(article.date) }}
+            </div>
+        </div>
+
+        <h2 class="dgp-display-lg dgp-weight-semi-bold">
+            {{ article.title }}
+        </h2>
+
+        <div class="article-hero"></div>
+
+        <div class="article-body">
+            @for (paragraph of article.bodyParagraphs; track paragraph) {
+            <p class="dgp-text-lg">{{ paragraph }}</p>
+            }
+        </div>
+
+        <a routerLink="/media-center" class="dgp-button secondry outlined article-back">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="text-md">{{ t('news.backToMediaCenter') }}</span>
+        </a>
+    </div>
+</section>
+}

@@ -1,0 +1,326 @@
+<section class="home-page">
+  <!--home page top banner-->
+  <section class="first-slider" #firstSlider>
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="slide">
+            <div class="start">
+              <div class="details" data-swiper-parallax="-300">
+                <h3 class="details_title">
+                  <span>&ldquo;</span>
+                  {{ t('home.heroQuote1') }}
+                  <span>&rdquo;</span>
+                </h3>
+                <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/19452a7b-ad79-4947-b2d8-857e098f5d51/Group+28247.svg?MOD=AJPERES&CONVERT_TO=url&CACHEID=ROOTWORKSPACE-19452a7b-ad79-4947-b2d8-857e098f5d51-oHsor0W" data-swiper-parallax="-400" width="300" alt="" />
+              </div>
+            </div>
+            <div class="end">
+              <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/f845bfe8-ed68-46fa-a3f4-4016867909c5/king-salman-slider.png?MOD=AJPERES&CONVERT_TO=url&CACHEID=ROOTWORKSPACE-f845bfe8-ed68-46fa-a3f4-4016867909c5-oHsor0W" data-swiper-parallax="-400" alt="" />
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="slide">
+            <div class="start">
+              <div class="details" data-swiper-parallax="-300">
+                <h3 class="details_title">
+                  <span>&ldquo;</span>
+                  {{ t('home.heroQuote2') }}
+                  <span>&rdquo;</span>
+                </h3>
+                <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/2775c8d1-0b25-4099-bdb4-9330de0cef34/Group+28248.svg?MOD=AJPERES&CONVERT_TO=url&CACHEID=ROOTWORKSPACE-2775c8d1-0b25-4099-bdb4-9330de0cef34-oHsoBxz" data-swiper-parallax="-400" width="300" alt="" />
+              </div>
+            </div>
+            <div class="end">
+              <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/e5dfe3b9-4039-4d45-926d-98bd98037fd1/mbs-slider.png?MOD=AJPERES&CONVERT_TO=url&CACHEID=ROOTWORKSPACE-e5dfe3b9-4039-4d45-926d-98bd98037fd1-oHsoBxz" data-swiper-parallax="-400" alt="" />
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="slide">
+            <div class="start">
+              <div class="details" data-swiper-parallax="-300">
+                <div data-swiper-parallax="-200">
+                  <div class="dgp-text-lg dgp-weight-semi-bold high-light">
+                    {{ t('home.heroDate') }}
+                  </div>
+                  <h3 data-swiper-parallax="-300">
+                    {{ t('home.heroHeadline3') }}
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div class="end">
+              <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/29b84161-36bc-48fa-9f44-320304aad6da/sheild.png?MOD=AJPERES&CONVERT_TO=url&CACHEID=ROOTWORKSPACE-29b84161-36bc-48fa-9f44-320304aad6da-p6v2NiH" data-swiper-parallax="-400" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="swiper-pagination">
+      <div class="pagination-buttons"></div>
+    </div>
+  </section>
+
+  <!--home page about us-->
+  <div class="home-about dgp-container">
+    <h2 class="dgp-display-xl dgp-weight-bold mb-3xl">
+      {{ t('home.aboutTitle') }}
+    </h2>
+    <p class="text-xl mb-5xl">
+      {{ t('home.aboutDesc') }}
+    </p>
+
+    <div class="cards">
+      <div class="dgp-card">
+        <div class="content">
+          <span class="material-symbols-outlined mb-lg">shield_lock</span>
+          <h4 class="dgp-display-sm dgp-weight-bold mb-sm">
+            {{ t('home.card1Title') }}
+          </h4>
+          <p class="text-xl mb-lg">
+            {{ t('home.card1Desc') }}
+          </p>
+          <a href="/wps/portal/pdp/about/aboutoffice">
+            <button class="dgp-button transparent sm">
+              <span class="text-md dgp-weight-medium">{{ t('home.readMore') }}</span>
+              <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+          </a>
+        </div>
+      </div>
+      <div class="dgp-card">
+        <div class="content">
+          <span class="material-symbols-outlined mb-lg">target</span>
+          <h4 class="dgp-display-sm dgp-weight-bold mb-sm">
+            {{ t('home.card2Title') }}
+          </h4>
+          <p class="text-xl mb-lg">
+            {{ t('home.card2Desc') }}
+          </p>
+          <a href="/wps/portal/pdp/about/objectives">
+            <button class="dgp-button transparent sm">
+              <span class="text-md dgp-weight-medium">{{ t('home.readMore') }}</span>
+              <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+          </a>
+        </div>
+      </div>
+      <div class="dgp-card">
+        <div class="content">
+          <span class="material-symbols-outlined mb-lg">flag</span>
+          <h4 class="dgp-display-sm dgp-weight-bold mb-sm">
+            {{ t('home.card3Title') }}
+          </h4>
+          <p class="text-xl mb-lg">
+            {{ t('home.card3Desc') }}
+          </p>
+          <a href="/wps/portal/pdp/about/features">
+            <button class="dgp-button transparent sm">
+              <span class="text-md dgp-weight-medium">{{ t('home.readMore') }}</span>
+              <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--home page awareness video -->
+  <div class="shield-section dgp-container">
+    <div class="shield-start">
+      <h4 class="dgp-display-sm dgp-weight-bold mb-3xl">
+        {{ t('home.pdplTitle') }}
+      </h4>
+      <p class="text-md mb-3xl">
+        {{ t('home.pdplDesc') }}
+      </p>
+      <a class="dgp-button secondry lg" href="javascript:void(0)" (click)="openVideoModal()">
+        <span class="text-md">{{ t('home.watchVideo') }}</span>
+      </a>
+
+      @if (isVideoModalOpen) {
+        <div class="dgp-overlay" (click)="closeVideoModal()" (keydown.escape)="closeVideoModal()" tabindex="-1">
+          <div class="dgp-modal" (click)="$event.stopPropagation()">
+            <div class="dgp-modal-header">
+              <div class="dgp-modal-header-title">
+                <h4 class="dgp-modal-title">{{ t('home.watchVideo') }}</h4>
+                <h6 class="dgp-modal-subtitle">
+                  {{ t('home.pdplDesc') }}
+                </h6>
+              </div>
+              <button type="button" class="dgp-button transparent sm" (click)="closeVideoModal()" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div class="dgp-modal-body">
+              <div class="d-flex justify-content-center">
+                <video controls class="w-75">
+                  <source src="https://dgp.sdaia.gov.sa/wps/wcm/connect/6c82404a-daec-4583-8de3-472540655d43/%D8%A2%D9%84%D9%8A%D8%A9+%D8%AA%D9%82%D8%AF%D9%8A%D9%85+%D8%A7%D9%84%D8%B4%D9%83%D9%88%D9%89+%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA+%D8%A3%D8%AD%D9%83%D8%A7%D9%85+%D9%86%D8%B8%D8%A7%D9%85+%D8%AD%D9%85%D8%A7%D9%8A%D8%A9+%D8%A7%D9%84%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA+%D8%A7%D9%84%D8%B4%D8%AE%D8%B5%D9%8A%D8%A9.mp4?MOD=AJPERES&CACHEID=ROOTWORKSPACE-6c82404a-daec-4583-8de3-472540655d43-p-ERbS6" type="video/mp4" />
+                  {{ t('home.videoNotSupported') }}
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="shield-end">
+      <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/e4206018-ec09-43e4-a32c-c1a8d1545e5d/shield.png?MOD=AJPERES&CONVERT_TO=url&CACHEID=ROOTWORKSPACE-e4206018-ec09-43e4-a32c-c1a8d1545e5d-pCBd.Jn" alt="" />
+    </div>
+  </div>
+
+  <!--home page register banner -->
+  <div class="second-slider dgp-container">
+    <h4 class="dgp-display-sm dgp-weight-bold mb-xl">
+      {{ t('home.servicesTitle') }}
+    </h4>
+    <div class="second-slider-container" #secondSlider>
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="slide" data-aos="fade-up" data-aos-duration="1000">
+              <div class="service dgp-card" data-aos="fade-up">
+                <div class="img">
+                  <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/4f86c12b-fa40-4e1e-bd29-22e2f07bec3f/%D8%A8%D8%B1%D8%AC+%D8%A7%D9%84%D9%85%D9%85%D9%84%D9%83%D9%87+.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE-4f86c12b-fa40-4e1e-bd29-22e2f07bec3f-p72w61U" alt="Public Entity Registration" />
+                </div>
+                <div class="service-text">
+                  <h5 class="dgp-text-lg dgp-weight-bold mb-sm">
+                    {{ t('home.service1Title') }}
+                  </h5>
+                  <p class="dgp-text-md">
+                    {{ t('home.service1Desc') }}
+                  </p>
+                </div>
+                <div class="actions">
+                  <a href="/wps/portal/pdp/Registration/government">
+                    <button class="dgp-button secondry sm">
+                      <span class="material-symbols-outlined">arrow_right_alt</span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="slide">
+              <div class="service dgp-card">
+                <div class="img">
+                  <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/cc02f174-ec82-4e53-8d69-660c79fccc81/saudi+pic2.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE-cc02f174-ec82-4e53-8d69-660c79fccc81-p73KFd6" alt="Private Organization Registration" />
+                </div>
+                <div class="service-text">
+                  <h5 class="dgp-text-lg dgp-weight-bold mb-sm">
+                    {{ t('home.service2Title') }}
+                  </h5>
+                  <p class="dgp-text-md">
+                    {{ t('home.service2Desc') }}
+                  </p>
+                </div>
+                <div class="actions">
+                  <a href="/wps/portal/pdp/Registration/private">
+                    <button class="dgp-button secondry sm">
+                      <span class="material-symbols-outlined">arrow_right_alt</span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="slide">
+              <div class="service dgp-card">
+                <div class="img">
+                  <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/6f785c83-a78b-4962-bf2a-7e7637a58ccb/registration-card-1.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE-6f785c83-a78b-4962-bf2a-7e7637a58ccb-pLhyw2I" alt="Has your personal data been compromised?" />
+                </div>
+                <div class="service-text">
+                  <h5 class="dgp-text-lg dgp-weight-bold mb-sm">
+                    {{ t('home.service3Title') }}
+                  </h5>
+                  <p class="dgp-text-md">
+                    {{ t('home.service3Desc') }}
+                  </p>
+                </div>
+                <div class="actions">
+                  <a href="/wps/portal/pdp/services/reportscomplaints">
+                    <button class="dgp-button secondry sm">
+                      <span class="material-symbols-outlined">arrow_right_alt</span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="slide">
+              <div class="service dgp-card">
+                <div class="img">
+                  <img src="https://dgp.sdaia.gov.sa/wps/wcm/connect/e510bb86-5045-4d55-97f6-2691e69b35c6/registration-card-2.png?MOD=AJPERES&CACHEID=ROOTWORKSPACE-e510bb86-5045-4d55-97f6-2691e69b35c6-p8KcQY8" alt="Do you want to conduct a self-assessment of commitment?" />
+                </div>
+                <div class="service-text">
+                  <h5 class="dgp-text-lg dgp-weight-bold mb-sm">
+                    {{ t('home.service4Title') }}
+                  </h5>
+                  <p class="dgp-text-md">
+                    {{ t('home.service4Desc') }}
+                  </p>
+                </div>
+                <div class="actions">
+                  <a href="/wps/portal/pdp/services/servicesdetails/selfassessment">
+                    <button class="dgp-button secondry sm">
+                      <span class="material-symbols-outlined">arrow_right_alt</span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination">
+        <div class="pagination-buttons"></div>
+      </div>
+    </div>
+  </div>
+
+  <!--home page search component -->
+  <div class="home-about dgp-container mb-5xl">
+    <h4 class="dgp-display-sm dgp-weight-bold mb-5xl">
+      {{ t('home.searchTitle') }}
+    </h4>
+
+    <div class="cards">
+      <div class="dgp-card w-50">
+        <div class="content">
+          <span class="material-symbols-outlined mb-lg">verified_user</span>
+          <h4 class="dgp-text-xl dgp-weight-bold mb-lg">
+            {{ t('home.search1Title') }}
+          </h4>
+          <p class="text-xl mb-xl">
+            {{ t('home.search1Desc') }}
+          </p>
+          <a href="/wps/portal/pdp/pservices/search" class="dgp-button secondry lg">
+            <span class="text-md">{{ t('home.search') }}</span>
+            <span class="material-symbols-outlined">outbound</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="dgp-card w-50">
+        <div class="content">
+          <span class="material-symbols-outlined mb-lg">developer_guide</span>
+          <h4 class="dgp-text-xl dgp-weight-bold mb-lg">
+            {{ t('home.search2Title') }}
+          </h4>
+          <p class="text-xl mb-xl">
+            {{ t('home.search2Desc') }}
+          </p>
+          <a href="/wps/portal/pdp/pservices/search-license-certificates" class="dgp-button secondry lg">
+            <span class="text-md">{{ t('home.search') }}</span>
+            <span class="material-symbols-outlined">outbound</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

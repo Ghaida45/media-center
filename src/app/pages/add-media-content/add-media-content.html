@@ -1,0 +1,170 @@
+<ul class="dgp-breadcrumb">
+    <li>
+        <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center" class="dgp-text-sm">{{ t('header.mediaCenter') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center/manage" class="dgp-text-sm">{{ t('manage.breadcrumb') }}</a>
+    </li>
+    <li>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ t('add.breadcrumb') }}</a>
+    </li>
+</ul>
+
+<section class="knowledge-page add-content-page" [attr.dir]="languageService.dir">
+    <div class="dgp-container">
+        <h2 class="dgp-display-lg dgp-weight-semi-bold">{{ t('add.pageTitle') }}</h2>
+
+        <form class="add-content-form">
+            <div class="form-row">
+                <div class="form__control-wrapper form-field">
+                    <label class="dgp-text-sm dgp-weight-medium" for="contentType">{{ t('add.contentType') }} *</label>
+                    <select id="contentType" class="form__control" [(ngModel)]="contentType" name="contentType">
+                        <option value="News">{{ t('add.optionNews') }}</option>
+                        <option value="Photo">{{ t('add.optionPhoto') }}</option>
+                        <option value="Video">{{ t('add.optionVideo') }}</option>
+                    </select>
+                </div>
+
+                <div class="form__control-wrapper form-field">
+                    <label class="dgp-text-sm dgp-weight-medium" for="publishDate">{{ t('add.publishDate') }} *</label>
+                    <input type="date" id="publishDate" class="form__control" [(ngModel)]="publishDate"
+                        name="publishDate" required />
+                </div>
+
+                <div class="form__control-wrapper form-field">
+                    <label class="dgp-text-sm dgp-weight-medium" for="expiryDate">{{ t('add.expiryDate') }}</label>
+                    <input type="date" id="expiryDate" class="form__control" [(ngModel)]="expiryDate"
+                        name="expiryDate" />
+                </div>
+            </div>
+
+            <div class="form__control-wrapper form-field">
+                <label class="dgp-text-sm dgp-weight-medium" for="titleAr">{{ titleArabicLabel }}</label>
+                <input type="text" id="titleAr" class="form__control"
+                    [placeholder]="titleArPlaceholder" [(ngModel)]="titleAr"
+                    name="titleAr" />
+            </div>
+
+            <div class="form__control-wrapper form-field">
+                <label class="dgp-text-sm dgp-weight-medium" for="titleEn">{{ titleEnglishLabel }}</label>
+                <input type="text" id="titleEn" class="form__control"
+                    [placeholder]="titleEnPlaceholder" [(ngModel)]="titleEn"
+                    name="titleEn" required />
+            </div>
+
+            <div class="form-field">
+                <span class="dgp-text-sm dgp-weight-medium">{{ t('add.categories') }} *</span>
+                <div class="category-checkboxes">
+                    @for (tag of allTags; track tag) {
+                    <label class="category-checkbox">
+                        <input type="checkbox" [checked]="isTagSelected(tag)" (change)="toggleTag(tag)" />
+                        <span>{{ tag }}</span>
+                    </label>
+                    }
+                </div>
+                @if (showCategoryError) {
+                <span class="category-error dgp-text-sm">{{ t('add.categoryError') }}</span>
+                } @else {
+                <span class="category-hint dgp-text-sm">{{ t('add.categoryError') }}</span>
+                }
+            </div>
+
+            @if (contentType === 'News') {
+            <div class="form-field">
+                <label class="dgp-text-sm dgp-weight-medium" for="bodyAr">{{ bodyArabicLabel }}</label>
+                <textarea id="bodyAr" class="form__control add-content-textarea" dir="rtl"
+                    [placeholder]="bodyArPlaceholder" [(ngModel)]="bodyAr"
+                    name="bodyAr"></textarea>
+            </div>
+
+            <div class="form-field">
+                <label class="dgp-text-sm dgp-weight-medium" for="bodyEn">{{ bodyEnglishLabel }}</label>
+                <textarea id="bodyEn" class="form__control add-content-textarea"
+                    [placeholder]="bodyEnPlaceholder" [(ngModel)]="bodyEn"
+                    name="bodyEn" required></textarea>
+            </div>
+            }
+
+            <div class="form-field">
+                <span class="dgp-text-sm dgp-weight-medium">{{ fileFieldLabel }} {{ fileRequired ? '*' : '' }}</span>
+                <div class="file-dropzone" (drop)="onFileDrop($event)" (dragover)="onDragOver($event)">
+                    <span class="material-symbols-outlined">upload</span>
+                    @if (fileName) {
+                    <span class="dgp-text-sm dgp-weight-medium">{{ fileName }}</span>
+                    } @else {
+                    <span class="dgp-text-sm">{{ t('add.dragDrop') }}</span>
+                    }
+                    <span class="dgp-text-sm file-hint">{{ fileAcceptHint }}</span>
+                    <input type="file" id="mediaFile" class="file-input" [attr.aria-label]="fileFieldLabel"
+                        [accept]="fileAccept" (change)="onFileSelected($event)" />
+                </div>
+            </div>
+
+            <div class="add-content-actions">
+                <button type="button" class="dgp-button success" (click)="submitForApproval()">{{ t('add.submitForApproval') }}</button>
+                <button type="button" class="dgp-button secondry outlined" (click)="saveAsDraft()">{{ t('add.saveAsDraft') }}</button>
+                <button type="button" class="dgp-button secondry transparent" (click)="cancel()">{{ t('add.cancel') }}</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@if (showSubmitModal) {
+<div class="dgp-overlay form-modal-overlay" (click)="cancelSubmitModal()" (keydown.escape)="cancelSubmitModal()"
+    tabindex="-1">
+    <div class="form-modal" (click)="$event.stopPropagation()">
+        <div class="form-modal-icon success">
+            <span class="material-symbols-outlined">check</span>
+        </div>
+        <h3 class="dgp-text-lg dgp-weight-bold">{{ t('add.sendForApprovalTitle') }}</h3>
+        <p class="dgp-text-sm form-modal-description">
+            {{ t('add.sendForApprovalDesc') }}
+        </p>
+        <div class="form-modal-actions">
+            <button type="button" class="dgp-button secondry outlined" (click)="cancelSubmitModal()">{{ t('add.cancel') }}</button>
+            <button type="button" class="dgp-button success" (click)="confirmSubmit()">{{ t('add.confirmSend') }}</button>
+        </div>
+    </div>
+</div>
+}
+
+@if (showDraftModal) {
+<div class="dgp-overlay form-modal-overlay" (click)="cancelDraftModal()" (keydown.escape)="cancelDraftModal()"
+    tabindex="-1">
+    <div class="form-modal" (click)="$event.stopPropagation()">
+        <div class="form-modal-icon warning">
+            <span class="material-symbols-outlined">priority_high</span>
+        </div>
+        <h3 class="dgp-text-lg dgp-weight-bold">{{ t('add.saveAsDraftTitle') }}</h3>
+        <p class="dgp-text-sm form-modal-description">
+            {{ t('add.saveAsDraftDesc') }}
+        </p>
+        <div class="form-modal-actions">
+            <button type="button" class="dgp-button secondry outlined" (click)="cancelDraftModal()">{{ t('add.cancel') }}</button>
+            <button type="button" class="dgp-button warning" (click)="confirmDraft()">{{ t('add.confirmSave') }}</button>
+        </div>
+    </div>
+</div>
+}
+
+@if (showCancelModal) {
+<div class="dgp-overlay form-modal-overlay" (click)="cancelCancelModal()" (keydown.escape)="cancelCancelModal()"
+    tabindex="-1">
+    <div class="form-modal" (click)="$event.stopPropagation()">
+        <div class="form-modal-icon error">
+            <span class="material-symbols-outlined">close</span>
+        </div>
+        <h3 class="dgp-text-lg dgp-weight-bold">{{ t('add.cancelAdditionTitle') }}</h3>
+        <p class="dgp-text-sm form-modal-description">
+            {{ t('add.cancelAdditionDesc') }}
+        </p>
+        <div class="form-modal-actions">
+            <button type="button" class="dgp-button secondry outlined" (click)="cancelCancelModal()">{{ t('add.back') }}</button>
+            <button type="button" class="dgp-button error" (click)="confirmCancel()">{{ t('add.confirmCancel') }}</button>
+        </div>
+    </div>
+</div>
+}

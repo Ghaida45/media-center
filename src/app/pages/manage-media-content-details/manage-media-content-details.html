@@ -1,0 +1,58 @@
+@if (item) {
+<ul class="dgp-breadcrumb">
+    <li>
+        <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center" class="dgp-text-sm">{{ t('header.mediaCenter') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center/manage" class="dgp-text-sm">{{ t('manage.breadcrumb') }}</a>
+    </li>
+    <li>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ item.title }}</a>
+    </li>
+</ul>
+
+<section class="knowledge-page manage-details-page" [attr.dir]="languageService.dir">
+    <div class="dgp-container">
+        <div class="manage-details-header">
+            <a routerLink="/media-center/manage" class="manage-details-back" aria-label="Back">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+
+            <div class="manage-details-meta">
+                @if (item.expiryDate) {
+                <span class="manage-details-date dgp-text-sm">{{ t('manageDetails.expiryDate') }} {{ formatDate(item.expiryDate) }}</span>
+                }
+                <span class="manage-details-date dgp-text-sm">{{ t('manageDetails.publishDate') }} {{ formatDate(item.date) }}</span>
+                <span class="status-badge" [class]="'status-' + item.status">
+                    {{ t(statusLabelKeys[item.status]) }}
+                </span>
+                @for (tag of item.tags; track tag) {
+                <span class="media-tag-pill static" [class]="'tag-' + tag.toLowerCase()">{{ tag }}</span>
+                }
+            </div>
+        </div>
+
+        <h2 class="dgp-display-lg dgp-weight-semi-bold">
+            {{ item.title }}
+        </h2>
+
+        <div class="manage-details-hero"></div>
+
+        <div class="manage-details-body">
+            @for (paragraph of item.bodyParagraphs; track paragraph) {
+            <p class="dgp-text-lg">{{ paragraph }}</p>
+            }
+        </div>
+
+        @if (item.status === 'rejected' && item.rejectionReason) {
+        <div class="rejection-reason">
+            <h6 class="dgp-text-md dgp-weight-bold">{{ t('manageDetails.rejectionReason') }}</h6>
+            <p class="dgp-text-md">{{ item.rejectionReason }}</p>
+        </div>
+        }
+    </div>
+</section>
+}

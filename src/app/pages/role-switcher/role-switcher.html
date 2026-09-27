@@ -1,0 +1,34 @@
+<ul class="dgp-breadcrumb">
+    <li>
+        <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
+    </li>
+    <li>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ t('role.title') }}</a>
+    </li>
+</ul>
+
+<section class="knowledge-page role-switcher-page" [attr.dir]="languageService.dir">
+    <div class="dgp-container">
+        <h2 class="dgp-display-lg dgp-weight-semi-bold">
+            {{ t('role.title') }}
+        </h2>
+        <p class="dgp-text-md role-switcher-hint">
+            {{ t('role.hintPrefix') }}
+            <strong>{{ roleLabel(userRoleService.role()) }}</strong>
+        </p>
+
+        <div class="role-cards">
+            @for (role of roles; track role.id) {
+            <div class="role-card" [class.active]="userRoleService.role() === role.id">
+                <h4 class="dgp-text-lg dgp-weight-bold">{{ roleLabel(role.id) }}</h4>
+                <p class="dgp-text-md">{{ roleDesc(role.id) }}</p>
+                <button type="button" class="dgp-button" [class.primary]="userRoleService.role() === role.id"
+                    [class.secondry]="userRoleService.role() !== role.id"
+                    [class.outlined]="userRoleService.role() !== role.id" (click)="setRole(role.id)">
+                    {{ userRoleService.role() === role.id ? t('role.currentlyActive') : t('role.switchTo') + ' ' + roleLabel(role.id) }}
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,78 @@
+<ul class="dgp-breadcrumb">
+    <li>
+        <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
+    </li>
+    <li>
+        <a routerLink="/media-center" class="dgp-text-sm">{{ t('header.mediaCenter') }}</a>
+    </li>
+    <li>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ t('manage.breadcrumb') }}</a>
+    </li>
+</ul>
+
+<section class="knowledge-page manage-page" [attr.dir]="languageService.dir">
+    <div class="dgp-container">
+        <div class="media-title-row">
+            <h2 class="dgp-display-lg dgp-weight-semi-bold">
+                {{ t('manage.title') }}
+            </h2>
+            <a routerLink="/media-center/manage/add" class="dgp-button primary">
+                <span class="material-symbols-outlined">add</span>
+                <span class="text-md">{{ t('manage.addMediaContent') }}</span>
+            </a>
+        </div>
+
+        <div class="dgp-tabs manage-status-tabs">
+            @for (filter of statusFilters; track filter.id) {
+            <a class="dgp-tab" [class.active]="activeStatusFilter === filter.id"
+                (click)="setStatusFilter(filter.id)">
+                <span>{{ t(filter.key) }}</span>
+            </a>
+            }
+        </div>
+
+        <div class="manage-table-wrapper">
+        <table class="manage-table">
+            <thead>
+                <tr>
+                    <th>{{ t('manage.colTitle') }}</th>
+                    <th>{{ t('manage.colType') }}</th>
+                    <th>{{ t('manage.colStatus') }}</th>
+                    <th>{{ t('manage.colDate') }}</th>
+                    <th>{{ t('manage.colAction') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of pagedItems; track item.title) {
+                <tr>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.type }}</td>
+                    <td>
+                        <span class="status-badge" [class]="'status-' + item.status">
+                            {{ t(statusLabelKeys[item.status]) }}
+                        </span>
+                    </td>
+                    <td>{{ formatDate(item.date) }}</td>
+                    <td>
+                        <a [routerLink]="item.status === 'draft' ? ['/media-center/manage/edit', item.id] : ['/media-center/manage', item.id]"
+                            class="dgp-button secondry outlined sm">{{ t('manage.view') }}</a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="manage-pagination">
+            <span class="dgp-text-sm">
+                {{ t('manage.showingPrefix') }} {{ rangeStart }} - {{ rangeEnd }} {{ t('manage.showingOf') }} {{ filteredItems.length }} {{ t('manage.showingSuffix') }}
+            </span>
+            <div class="manage-pagination-buttons">
+                <button type="button" class="dgp-button secondry outlined sm" [disabled]="currentPage === 1"
+                    (click)="previousPage()">{{ t('manage.previous') }}</button>
+                <button type="button" class="dgp-button secondry outlined sm" [disabled]="currentPage === totalPages"
+                    (click)="nextPage()">{{ t('manage.next') }}</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>

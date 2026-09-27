@@ -1,0 +1,396 @@
+export type AppLanguage = 'en' | 'ar';
+
+export const TRANSLATIONS: Record<string, Record<AppLanguage, string>> = {
+  // ===== Header =====
+  'header.officialSite': {
+    en: 'Official government website of the Government of the Kingdom of Saudi Arabia',
+    ar: 'موقع حكومي رسمي تابع لحكومة المملكة العربية السعودية',
+  },
+  'header.howToVerify': { en: 'How to verify', ar: 'كيف تتحقق' },
+  'header.govSaLead': {
+    en: 'Links to official Saudi websites end with',
+    ar: 'روابط المواقع الرسمية السعودية تنتهي بـ',
+  },
+  'header.govSaDesc': {
+    en: 'All links to official websites of government agencies in the Kingdom of Saudi Arabia end with gov.sa.',
+    ar: 'جميع روابط المواقع الرسمية للجهات الحكومية في المملكة العربية السعودية تنتهي بـ gov.sa.',
+  },
+  'header.httpsLead': {
+    en: 'Government websites use the',
+    ar: 'تستخدم المواقع الحكومية بروتوكول',
+  },
+  'header.httpsTrail': {
+    en: 'protocol for encryption and security.',
+    ar: 'للتشفير والأمان.',
+  },
+  'header.httpsDesc': {
+    en: 'Secure websites in the Kingdom of Saudi Arabia use the HTTPS protocol for encryption.',
+    ar: 'تستخدم المواقع الآمنة في المملكة العربية السعودية بروتوكول HTTPS للتشفير.',
+  },
+  'header.registeredWith': {
+    en: 'Registered with the Digital Government Authority under number:',
+    ar: 'مسجل لدى هيئة الحكومة الرقمية تحت الرقم:',
+  },
+  'header.aboutPlatform': { en: 'About the Platform', ar: 'عن المنصة' },
+  'header.registration': { en: 'Registration', ar: 'التسجيل' },
+  'header.registrationHeader': {
+    en: 'Registration in the National Personal Data Protection Register',
+    ar: 'التسجيل في السجل الوطني لحماية البيانات الشخصية',
+  },
+  'header.govOrgs': { en: 'Government organizations', ar: 'الجهات الحكومية' },
+  'header.privateOrgs': { en: 'Private organizations', ar: 'الجهات الخاصة' },
+  'header.externalOrgs': { en: 'External organizations', ar: 'الجهات الخارجية' },
+  'header.nonProfitOrgs': { en: 'Non-Profit Entities', ar: 'الجهات غير الربحية' },
+  'header.eServices': { en: 'e-Services', ar: 'الخدمات الإلكترونية' },
+  'header.servicesHeader': { en: 'Services', ar: 'الخدمات' },
+  'header.dpia': {
+    en: 'Data Protection Impact Assessments',
+    ar: 'تقييم أثر حماية البيانات',
+  },
+  'header.breachNotification': {
+    en: 'Personal Data Breach Notification',
+    ar: 'الإبلاغ عن اختراق البيانات الشخصية',
+  },
+  'header.reportsComplaints': { en: 'Reports and Complaints', ar: 'البلاغات والشكاوى' },
+  'header.regulatorySandbox': {
+    en: 'Regulatory Sandbox Program',
+    ar: 'برنامج البيئة التنظيمية التجريبية',
+  },
+  'header.aiAccreditation': {
+    en: 'AI Service Provider Accreditation',
+    ar: 'اعتماد مزودي خدمات الذكاء الاصطناعي',
+  },
+  'header.legalOpinion': {
+    en: 'Request for Legal Opinion Clarification',
+    ar: 'طلب توضيح رأي قانوني',
+  },
+  'header.dataSharingApproval': {
+    en: 'Request for Approval of Data Sharing Method',
+    ar: 'طلب الموافقة على آلية مشاركة البيانات',
+  },
+  'header.dataClassificationRegistry': {
+    en: 'National Data Calcification Registry',
+    ar: 'السجل الوطني لتصنيف البيانات',
+  },
+  'header.revenueRegistry': {
+    en: 'National Registry for Revenue Generation from Data Services and Products',
+    ar: 'السجل الوطني لتوليد الإيرادات من خدمات ومنتجات البيانات',
+  },
+  'header.dataProviderRegistration': {
+    en: 'The Data Service and Product Provider Registration Service',
+    ar: 'خدمة تسجيل مزودي خدمات ومنتجات البيانات',
+  },
+  'header.biometricRegistry': {
+    en: 'National Registry For Biometric Attributes',
+    ar: 'السجل الوطني للسمات الحيوية',
+  },
+  'header.dataQualityRegistry': {
+    en: 'National Registry For Data Quality Challenges',
+    ar: 'السجل الوطني لتحديات جودة البيانات',
+  },
+  'header.toolsHeader': { en: 'Tools', ar: 'الأدوات' },
+  'header.dpoTool': {
+    en: 'DPO Appointment Guiding Tool',
+    ar: 'أداة إرشادية لتعيين مسؤول حماية البيانات',
+  },
+  'header.selfAssessment': { en: 'Self Assessment', ar: 'التقييم الذاتي' },
+  'header.aiEthicsAssessment': { en: 'AI Ethics Assessment', ar: 'تقييم أخلاقيات الذكاء الاصطناعي' },
+  'header.knowledgeCenter': { en: 'Knowledge center', ar: 'المركز المعرفي' },
+  'header.mediaCenter': { en: 'Media center', ar: 'المركز الإعلامي' },
+  'header.languageSwitcher': { en: 'Language Switcher', ar: 'تبديل اللغة' },
+  'header.login': { en: 'Login', ar: 'تسجيل الدخول' },
+
+  // ===== Footer =====
+  'footer.overview': { en: 'Overview', ar: 'نظرة عامة' },
+  'footer.contactUs': { en: 'Contact us', ar: 'اتصل بنا' },
+  'footer.importantLinks': { en: 'Important Links', ar: 'روابط مهمة' },
+  'footer.privacyImpact': { en: 'Privacy Impact Assessment', ar: 'تقييم أثر الخصوصية' },
+  'footer.getInTouch': { en: 'Get in Touch', ar: 'تواصل معنا' },
+  'footer.siteMap': { en: 'Site Map', ar: 'خريطة الموقع' },
+  'footer.privacyPolicy': { en: 'Privacy Policy', ar: 'سياسة الخصوصية' },
+  'footer.copyright': {
+    en: 'All rights reserved to Saudi Data & AI Authority © 2026',
+    ar: 'جميع الحقوق محفوظة لهيئة البيانات والذكاء الاصطناعي © 2026',
+  },
+
+  // ===== Home =====
+  'home.heroQuote1': {
+    en: 'My primary goal is to be an exemplary and leading nation in all aspects, and I will work with you in achieving this endeavor',
+    ar: 'هدفي الأساسي أن نكون دولة نموذجية ورائدة في جميع المجالات، وسأعمل معكم على تحقيق هذا المسعى',
+  },
+  'home.heroQuote2': {
+    en: 'Together, we achieve this ambition and build a pioneering model to unlock the value of data and AI; to build knowledge economies and to elevate our current and upcoming generations',
+    ar: 'معاً نحقق هذا الطموح ونبني نموذجاً رائداً لإطلاق قيمة البيانات والذكاء الاصطناعي؛ لبناء اقتصادات معرفية والارتقاء بأجيالنا الحالية والقادمة',
+  },
+  'home.heroDate': { en: 'Sep 16, 2021 | 9-2-1443', ar: '16 سبتمبر 2021 | 9-2-1443' },
+  'home.heroHeadline3': {
+    en: "The Personal Data Protection Law has been enacted to safeguard individuals' privacy and protect personal data",
+    ar: 'صدر نظام حماية البيانات الشخصية لحماية خصوصية الأفراد وحماية بياناتهم الشخصية',
+  },
+  'home.aboutTitle': { en: 'About the Platform', ar: 'عن المنصة' },
+  'home.aboutDesc': {
+    en: 'National Data Governance Platform is a national electronic Platform that targets data management and governance in addition to protection of personal data by providing a set of electronic services, such as: Assess compliance',
+    ar: 'المنصة الوطنية لحوكمة البيانات هي منصة إلكترونية وطنية تستهدف إدارة وحوكمة البيانات إضافة إلى حماية البيانات الشخصية من خلال تقديم مجموعة من الخدمات الإلكترونية، مثل: تقييم الامتثال',
+  },
+  'home.card1Title': { en: 'About the Platform', ar: 'عن المنصة' },
+  'home.card1Desc': {
+    en: 'National Data Governance Platform is a national electronic Platform that targets data management and governance in addition to protection of personal data by providing a set of electronic services, such as: Assess compliance',
+    ar: 'المنصة الوطنية لحوكمة البيانات هي منصة إلكترونية وطنية تستهدف إدارة وحوكمة البيانات إضافة إلى حماية البيانات الشخصية من خلال تقديم مجموعة من الخدمات الإلكترونية، مثل: تقييم الامتثال',
+  },
+  'home.card2Title': { en: 'Objectives', ar: 'الأهداف' },
+  'home.card2Desc': {
+    en: 'Maintain the privacy of individuals and enable them to exercise their rights when processing personal data',
+    ar: 'الحفاظ على خصوصية الأفراد وتمكينهم من ممارسة حقوقهم عند معالجة بياناتهم الشخصية',
+  },
+  'home.card3Title': { en: 'Platform Features', ar: 'مميزات المنصة' },
+  'home.card3Desc': {
+    en: "Provide tools and mechanisms to enable entities to comply with the Law's provisions easily",
+    ar: 'توفير أدوات وآليات تمكّن الجهات من الامتثال لأحكام النظام بسهولة',
+  },
+  'home.readMore': { en: 'Read more', ar: 'اقرأ المزيد' },
+  'home.pdplTitle': { en: 'Personal Data Protection Law', ar: 'نظام حماية البيانات الشخصية' },
+  'home.pdplDesc': {
+    en: 'A set of rules and controls regulating the processing of personal data of individuals residing in the Kingdom.',
+    ar: 'مجموعة من القواعد والضوابط المنظمة لمعالجة البيانات الشخصية للأفراد المقيمين في المملكة.',
+  },
+  'home.watchVideo': { en: 'Watch the awareness video', ar: 'شاهد فيديو التوعية' },
+  'home.videoNotSupported': {
+    en: 'Your browser does not support the video tag.',
+    ar: 'متصفحك لا يدعم تشغيل الفيديو.',
+  },
+  'home.servicesTitle': { en: 'Services', ar: 'الخدمات' },
+  'home.service1Title': { en: 'Public Entity Registration', ar: 'تسجيل جهة حكومية' },
+  'home.service1Desc': { en: 'Register the public entity you work for.', ar: 'سجّل الجهة الحكومية التي تعمل بها.' },
+  'home.service2Title': { en: 'Private Organization Registration', ar: 'تسجيل جهة خاصة' },
+  'home.service2Desc': { en: 'Start Registration of Private Entities', ar: 'ابدأ تسجيل الجهات الخاصة' },
+  'home.service3Title': {
+    en: 'Has your personal data been compromised?',
+    ar: 'هل تم اختراق بياناتك الشخصية؟',
+  },
+  'home.service3Desc': {
+    en: 'Start by filing a detailed complaint regarding the breach of personal data.',
+    ar: 'ابدأ بتقديم شكوى مفصلة بخصوص اختراق البيانات الشخصية.',
+  },
+  'home.service4Title': {
+    en: 'Do you want to conduct a self-assessment of commitment?',
+    ar: 'هل ترغب بإجراء تقييم ذاتي للالتزام؟',
+  },
+  'home.service4Desc': {
+    en: 'Find out your level of compliance with the provisions of the PDPL',
+    ar: 'تعرّف على مستوى امتثالك لأحكام نظام حماية البيانات الشخصية',
+  },
+  'home.searchTitle': { en: 'Search in the National Registry', ar: 'البحث في السجل الوطني' },
+  'home.search1Title': {
+    en: 'Search in the National Registry of Personal Data Protection',
+    ar: 'البحث في السجل الوطني لحماية البيانات الشخصية',
+  },
+  'home.search1Desc': {
+    en: 'This service enables you to verify the registration certificate in the National Registry of Personal Data Protection by using one of the available searching options.',
+    ar: 'تتيح لك هذه الخدمة التحقق من شهادة التسجيل في السجل الوطني لحماية البيانات الشخصية باستخدام أحد خيارات البحث المتاحة.',
+  },
+  'home.search2Title': {
+    en: 'Search in the National Registry of Data Service and Product Providers',
+    ar: 'البحث في السجل الوطني لمزودي خدمات ومنتجات البيانات',
+  },
+  'home.search2Desc': {
+    en: 'This service enables you to verify the registration of private companies as Data Products and Services Providers on the National Data Governance Platform.',
+    ar: 'تتيح لك هذه الخدمة التحقق من تسجيل الشركات الخاصة كمزودين لمنتجات وخدمات البيانات على المنصة الوطنية لحوكمة البيانات.',
+  },
+  'home.search': { en: 'Search', ar: 'بحث' },
+
+  // ===== Media Center =====
+  'media.title': { en: 'Media center', ar: 'المركز الإعلامي' },
+  'media.contentSentForReview': { en: 'Content Sent For Review', ar: 'المحتوى المرسل للاعتماد' },
+  'media.manageMediaContent': { en: 'Manage Media Content', ar: 'إدارة المحتوى الإعلامي' },
+  'media.tabNews': { en: 'News', ar: 'الأخبار' },
+  'media.tabPhotos': { en: 'Photos', ar: 'الصور' },
+  'media.tabVideos': { en: 'Videos', ar: 'مقاطع الفيديو' },
+  'media.searchPlaceholder': { en: 'Search for keywords or titles...', ar: 'ابحث عن الكلمات الدلالية أو العناوين...' },
+  'media.advancedFilter': { en: 'Advanced filter', ar: 'تصفية متقدمة' },
+  'media.clearAll': { en: 'Clear all', ar: 'مسح الكل' },
+  'media.contentStatus': { en: 'Content status', ar: 'حالة المحتوى' },
+  'media.published': { en: 'Published', ar: 'منشور' },
+  'media.hiddenStatus': { en: 'Hidden', ar: 'مخفي' },
+  'media.category': { en: 'Category', ar: 'التصنيف' },
+  'media.dateRange': { en: 'Date range', ar: 'الفترة الزمنية' },
+  'media.fromDate': { en: 'From date', ar: 'من تاريخ' },
+  'media.toDate': { en: 'To date', ar: 'إلى تاريخ' },
+  'media.apply': { en: 'Apply', ar: 'تطبيق' },
+  'media.sortPrefix': { en: 'Sort:', ar: 'الترتيب:' },
+  'media.sortNewest': { en: 'Newest first', ar: 'الأحدث أولاً' },
+  'media.sortOldest': { en: 'Oldest first', ar: 'الأقدم أولاً' },
+  'media.hide': { en: 'Hide', ar: 'إخفاء' },
+  'media.unhide': { en: 'Unhide', ar: 'إلغاء الإخفاء' },
+  'media.loadMore': { en: 'Load more', ar: 'تحميل المزيد' },
+  'media.videoNotSupported': {
+    en: 'Your browser does not support the video tag.',
+    ar: 'متصفحك لا يدعم تشغيل الفيديو.',
+  },
+  'media.hideContentTitle': { en: 'Hide Content', ar: 'إخفاء المحتوى' },
+  'media.hideContentDesc': {
+    en: "Are you sure you want to hide this content? The content will be hidden from the site and won't be visible to visitors.",
+    ar: 'هل أنت متأكد من إخفاء هذا المحتوى؟ سيتم إخفاء المحتوى من الموقع ولن يكون مرئياً للزوار.',
+  },
+  'media.confirmHide': { en: 'Confirm Hide', ar: 'تأكيد الإخفاء' },
+  'media.unhideContentTitle': { en: 'Unhide Content', ar: 'إلغاء الإخفاء' },
+  'media.unhideContentDesc': {
+    en: 'Are you sure you want to unhide this content? The content will be republished and visible again.',
+    ar: 'هل أنت متأكد من إلغاء إخفاء هذا المحتوى؟ سيتم إعادة نشر المحتوى وسيكون مرئياً مرة أخرى.',
+  },
+  'media.confirmUnhide': { en: 'Confirm Unhide', ar: 'تأكيد إلغاء الإخفاء' },
+  'media.cancel': { en: 'Cancel', ar: 'إلغاء' },
+
+  // ===== News details =====
+  'news.backToMediaCenter': { en: 'Back to Media Center', ar: 'العودة إلى المركز الإعلامي' },
+
+  // ===== Role switcher =====
+  'role.title': { en: 'Switch Role', ar: 'تبديل الدور' },
+  'role.hintPrefix': {
+    en: 'This is a development tool for previewing the site as different user roles. Currently signed in as:',
+    ar: 'هذه أداة تطوير لمعاينة الموقع بأدوار مستخدمين مختلفة. أنت مسجل الدخول حالياً بصفة:',
+  },
+  'role.currentlyActive': { en: 'Currently active', ar: 'نشط حالياً' },
+  'role.switchTo': { en: 'Switch to', ar: 'التبديل إلى' },
+  'role.userLabel': { en: 'Regular User', ar: 'مستخدم عادي' },
+  'role.userDesc': {
+    en: 'Browse the platform like a member of the public. No management access.',
+    ar: 'تصفح المنصة كأحد أفراد الجمهور. لا توجد صلاحيات إدارية.',
+  },
+  'role.employeeLabel': { en: 'Employee', ar: 'موظف' },
+  'role.employeeDesc': {
+    en: 'Can access Media Content Management to add, edit, and review content.',
+    ar: 'يمكنه الوصول إلى إدارة المحتوى الإعلامي لإضافة المحتوى وتعديله ومراجعته.',
+  },
+  'role.adminLabel': { en: 'Admin', ar: 'مدير' },
+  'role.adminDesc': {
+    en: 'Full access, including Media Content Management and administrative tools.',
+    ar: 'صلاحية كاملة، بما في ذلك إدارة المحتوى الإعلامي والأدوات الإدارية.',
+  },
+
+  // ===== Manage Media Content (list) =====
+  'manage.breadcrumb': { en: 'Media Content Management', ar: 'إدارة المحتوى الإعلامي' },
+  'manage.title': { en: 'Media Content Management', ar: 'إدارة المحتوى الإعلامي' },
+  'manage.addMediaContent': { en: 'Add Media Content', ar: 'إضافة محتوى إعلامي' },
+  'manage.filterAll': { en: 'All', ar: 'الكل' },
+  'manage.filterUnderReview': { en: 'Under Review', ar: 'قيد المراجعة' },
+  'manage.filterApproved': { en: 'Approved', ar: 'معتمد' },
+  'manage.filterRejected': { en: 'Rejected', ar: 'مرفوض' },
+  'manage.filterPublished': { en: 'Published', ar: 'منشور' },
+  'manage.filterDraft': { en: 'Draft', ar: 'مسودة' },
+  'manage.colTitle': { en: 'Title', ar: 'العنوان' },
+  'manage.colType': { en: 'Type', ar: 'النوع' },
+  'manage.colStatus': { en: 'Status', ar: 'الحالة' },
+  'manage.colDate': { en: 'Creation Date', ar: 'تاريخ الإنشاء' },
+  'manage.colAction': { en: 'Action', ar: 'الإجراء' },
+  'manage.view': { en: 'View', ar: 'عرض' },
+  'manage.showingPrefix': { en: 'Showing', ar: 'عرض' },
+  'manage.showingOf': { en: 'of', ar: 'من' },
+  'manage.showingSuffix': { en: 'media items', ar: 'عنصر إعلامي' },
+  'manage.previous': { en: 'Previous', ar: 'السابق' },
+  'manage.next': { en: 'Next', ar: 'التالي' },
+
+  // ===== Manage Media Content Details =====
+  'manageDetails.expiryDate': { en: 'Expiry date:', ar: 'تاريخ انتهاء الصلاحية:' },
+  'manageDetails.publishDate': { en: 'Publish date:', ar: 'تاريخ النشر:' },
+  'manageDetails.rejectionReason': { en: 'Rejection reason:', ar: 'سبب الرفض:' },
+
+  // ===== Add Media Content =====
+  'add.breadcrumb': { en: 'Add Media Content', ar: 'إضافة محتوى إعلامي' },
+  'add.pageTitle': { en: 'Add Media Content', ar: 'إضافة محتوى إعلامي' },
+  'add.contentType': { en: 'Content type', ar: 'نوع المحتوى' },
+  'add.publishDate': { en: 'Publish date', ar: 'تاريخ النشر' },
+  'add.expiryDate': { en: 'Expiry date', ar: 'تاريخ انتهاء الصلاحية' },
+  'add.optionNews': { en: 'News', ar: 'خبر' },
+  'add.optionPhoto': { en: 'Photo', ar: 'صورة' },
+  'add.optionVideo': { en: 'Video', ar: 'فيديو' },
+  'add.titleArabic': { en: 'title (Arabic)', ar: 'العنوان (عربي)' },
+  'add.titleEnglish': { en: 'title (English)', ar: 'العنوان (إنجليزي)' },
+  'add.enterTitleArabic': { en: 'Enter', ar: 'أدخل عنوان' },
+  'add.enterTitleArabicSuffix': { en: 'title in Arabic', ar: 'باللغة العربية' },
+  'add.enterTitleEnglishSuffix': { en: 'title in English', ar: 'باللغة الإنجليزية' },
+  'add.categories': { en: 'Categories', ar: 'التصنيفات' },
+  'add.categoryError': { en: 'You must select at least one category', ar: 'يجب اختيار تصنيف واحد على الأقل' },
+  'add.contentArabic': { en: '(Arabic)', ar: '(عربي)' },
+  'add.contentEnglish': { en: '(English)', ar: '(إنجليزي)' },
+  'add.enterContentArabic': { en: 'Enter', ar: 'أدخل' },
+  'add.enterContentArabicSuffix': { en: 'in Arabic', ar: 'باللغة العربية' },
+  'add.enterContentEnglishSuffix': { en: 'in English', ar: 'باللغة الإنجليزية' },
+  'add.mainImage': { en: 'Main image', ar: 'الصورة الرئيسية' },
+  'add.image': { en: 'Image', ar: 'صورة' },
+  'add.videoFile': { en: 'Video file', ar: 'ملف فيديو' },
+  'add.dragDrop': { en: 'Drag the file here or click to upload', ar: 'اسحب الملف هنا أو اضغط للتحميل' },
+  'add.submitForApproval': { en: 'Submit for Approval', ar: 'إرسال للاعتماد' },
+  'add.saveAsDraft': { en: 'Save as Draft', ar: 'حفظ كمسودة' },
+  'add.cancel': { en: 'Cancel', ar: 'إلغاء' },
+  'add.sendForApprovalTitle': { en: 'Send for Approval', ar: 'إرسال للاعتماد' },
+  'add.sendForApprovalDesc': {
+    en: 'Are you sure you want to send this content for approval? Content review stages will begin with the responsible official.',
+    ar: 'هل أنت متأكد من إرسال هذا المحتوى للاعتماد؟ سيتم مراجعة المحتوى من قبل المسؤول المختص.',
+  },
+  'add.confirmSend': { en: 'Confirm Send', ar: 'تأكيد الإرسال' },
+  'add.saveAsDraftTitle': { en: 'Save as Draft', ar: 'حفظ كمسودة' },
+  'add.saveAsDraftDesc': {
+    en: 'Are you sure you want to save this as a draft? You can come back to edit it later and resend it for approval.',
+    ar: 'هل أنت متأكد من حفظ هذا المحتوى كمسودة؟ يمكنك العودة لتعديله لاحقاً وإرساله للاعتماد.',
+  },
+  'add.confirmSave': { en: 'Confirm Save', ar: 'تأكيد الحفظ' },
+  'add.cancelAdditionTitle': { en: 'Cancel Addition', ar: 'إلغاء الإضافة' },
+  'add.cancelAdditionDesc': {
+    en: 'Are you sure you want to cancel adding this content? All updated data will be lost and will not be saved.',
+    ar: 'هل أنت متأكد من إلغاء إضافة هذا المحتوى؟ سيتم فقدان جميع البيانات المحدثة ولن يتم حفظها.',
+  },
+  'add.back': { en: 'Back', ar: 'العودة' },
+  'add.confirmCancel': { en: 'Confirm Cancel', ar: 'تأكيد الإلغاء' },
+
+  // ===== Content Sent for Review (list) =====
+  'review.breadcrumb': { en: 'Content Sent for Review', ar: 'المحتوى المرسل للاعتماد' },
+  'review.title': { en: 'Content Sent for Review', ar: 'المحتوى المرسل للاعتماد' },
+  'review.colTitle': { en: 'Title', ar: 'العنوان' },
+  'review.colType': { en: 'Type', ar: 'النوع' },
+  'review.colSender': { en: 'Sender', ar: 'المرسل' },
+  'review.colDateSent': { en: 'Date Sent', ar: 'تاريخ الإرسال' },
+  'review.colAction': { en: 'Action', ar: 'الإجراء' },
+  'review.view': { en: 'View', ar: 'عرض' },
+  'review.showingPrefix': { en: 'Showing', ar: 'عرض' },
+  'review.showingOf': { en: 'of', ar: 'من' },
+  'review.showingSuffix': { en: 'media content', ar: 'محتوى إعلامي' },
+  'review.previous': { en: 'Previous', ar: 'السابق' },
+  'review.next': { en: 'Next', ar: 'التالي' },
+
+  // ===== Content Sent for Review Details =====
+  'reviewDetails.sender': { en: 'Sender:', ar: 'المرسل:' },
+  'reviewDetails.dateSent': { en: 'Date Sent:', ar: 'تاريخ الإرسال:' },
+  'reviewDetails.type': { en: 'Type:', ar: 'النوع:' },
+  'reviewDetails.titleArabic': { en: 'Title (Arabic):', ar: 'العنوان (عربي):' },
+  'reviewDetails.titleEnglish': { en: 'Title (English):', ar: 'العنوان (إنجليزي):' },
+  'reviewDetails.contentType': { en: 'Content type:', ar: 'نوع المحتوى:' },
+  'reviewDetails.category': { en: 'Category:', ar: 'التصنيف:' },
+  'reviewDetails.mainImage': { en: 'Main image:', ar: 'الصورة الرئيسية:' },
+  'reviewDetails.contentArabic': { en: 'Content (Arabic):', ar: 'المحتوى (عربي):' },
+  'reviewDetails.contentEnglish': { en: 'Content (English):', ar: 'المحتوى (إنجليزي):' },
+  'reviewDetails.expiryDate': { en: 'Expiry date:', ar: 'تاريخ انتهاء الصلاحية:' },
+  'reviewDetails.publishDate': { en: 'Publish date:', ar: 'تاريخ النشر:' },
+  'reviewDetails.reject': { en: 'Reject', ar: 'رفض' },
+  'reviewDetails.approve': { en: 'Approve', ar: 'اعتماد' },
+  'reviewDetails.rejectContentTitle': { en: 'Reject Content', ar: 'رفض المحتوى' },
+  'reviewDetails.rejectContentDesc': {
+    en: 'Are you sure you want to reject this content? Please enter a reason for the rejection to complete the process.',
+    ar: 'هل أنت متأكد من رفض هذا المحتوى؟ يرجى إدخال سبب الرفض لإتمام العملية.',
+  },
+  'reviewDetails.rejectionReasonLabel': { en: 'Rejection Reason', ar: 'سبب الرفض' },
+  'reviewDetails.rejectionReasonPlaceholder': {
+    en: 'Enter rejection reason here...',
+    ar: 'أدخل سبب الرفض هنا...',
+  },
+  'reviewDetails.confirmRejection': { en: 'Confirm Rejection', ar: 'تأكيد الرفض' },
+  'reviewDetails.approveContentTitle': { en: 'Approve Content', ar: 'اعتماد المحتوى' },
+  'reviewDetails.approveContentDesc': {
+    en: 'Are you sure you want to approve this content? The content status will change to "Approved" and become ready for publishing.',
+    ar: 'هل أنت متأكد من اعتماد هذا المحتوى؟ ستتغير حالة المحتوى إلى "معتمد" وسيصبح جاهزاً للنشر.',
+  },
+  'reviewDetails.confirmApproval': { en: 'Confirm Approval', ar: 'تأكيد الاعتماد' },
+  'reviewDetails.cancel': { en: 'Cancel', ar: 'إلغاء' },
+
+  // ===== Shared =====
+  'common.home': { en: 'Home', ar: 'الرئيسية' },
+};

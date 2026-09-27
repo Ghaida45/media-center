@@ -1,1 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
+
+/*
+ * The linked DGA stylesheet's own @font-face declarations for IBM Plex Sans Arabic
+ * and Material Symbols Outlined fail to load: dgp.sdaia.gov.sa's WAF rejects any
+ * cross-origin font request (browsers always send an Origin header for @font-face
+ * fetches). These re-declare the same fonts under different family names, sourced
+ * from Google Fonts (which serves them with proper CORS headers), and point the
+ * DGA framework's own font variables/classes at them instead.
+ */
+@font-face {
+  font-family: 'IBMP Regular Fallback';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://fonts.gstatic.com/s/ibmplexsansarabic/v15/Qw3CZRtWPQCuHme67tEYUIx3Kh0PHR9N6bs6.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IBMP Medium Fallback';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://fonts.gstatic.com/s/ibmplexsansarabic/v15/Qw3NZRtWPQCuHme67tEYUIx3Kh0PHR9N6YPO_9CT.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IBMP SemiBold Fallback';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://fonts.gstatic.com/s/ibmplexsansarabic/v15/Qw3NZRtWPQCuHme67tEYUIx3Kh0PHR9N6YPi-NCT.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IBMP Bold Fallback';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://fonts.gstatic.com/s/ibmplexsansarabic/v15/Qw3NZRtWPQCuHme67tEYUIx3Kh0PHR9N6YOG-dCT.ttf') format('truetype');
+}
+/*
+ * Redeclared under the SAME family name + descriptors (weight 100 700, normal style) as
+ * the DGA stylesheet's own broken declaration. Several unrelated selectors reference
+ * 'Material Symbols Outlined' by literal name (not just the .material-symbols-outlined
+ * class), so overriding the name itself - rather than patching each selector - covers
+ * all of them, including any added later.
+ */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  src: url('https://fonts.gstatic.com/s/materialsymbolsoutlined/v373/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOem.ttf') format('truetype');
+}
+
+:root {
+  --dgp-font-regular-400: 'IBMP Regular Fallback';
+  --dgp-font-medium-500: 'IBMP Medium Fallback';
+  --dgp-font-semi-bold-600: 'IBMP SemiBold Fallback';
+  --dgp-font-bold-700: 'IBMP Bold Fallback';
+}

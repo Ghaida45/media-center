@@ -1,0 +1,104 @@
+.manage-page {
+  padding-top: var(--dgp-spacing-3xl);
+  padding-bottom: var(--dgp-spacing-6xl);
+}
+
+.media-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dgp-spacing-xl);
+  flex-wrap: wrap;
+  margin-bottom: var(--dgp-spacing-2xl);
+}
+
+.manage-status-tabs {
+  margin-bottom: var(--dgp-spacing-2xl);
+}
+
+.manage-table-wrapper {
+  border: 1px solid var(--dgp-neutral-200);
+  border-radius: var(--dgp-radius-16);
+  overflow: hidden;
+}
+
+.manage-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.manage-table th {
+  text-align: left;
+  padding: var(--dgp-spacing-lg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dgp-neutral-500);
+  background: var(--dgp-neutral-50);
+  border-bottom: 1px solid var(--dgp-neutral-200);
+}
+
+.manage-table td {
+  padding: var(--dgp-spacing-xl) var(--dgp-spacing-lg);
+  border-bottom: 1px solid var(--dgp-neutral-100);
+  color: var(--dgp-neutral-700);
+}
+
+.manage-table th:not(:first-child),
+.manage-table td:not(:first-child) {
+  text-align: center;
+}
+
+.manage-table tbody tr:hover {
+  background: var(--dgp-neutral-50);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: var(--dgp-spacing-xs) var(--dgp-spacing-md);
+  border-radius: var(--dgp-radius-8);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.status-draft {
+  background: var(--dgp-neutral-100);
+  color: var(--dgp-neutral-700);
+}
+
+.status-badge.status-underReview {
+  background: var(--dgp-warning-100);
+  color: var(--dgp-warning-700);
+}
+
+.status-badge.status-approved {
+  background: var(--dgp-info-100);
+  color: var(--dgp-info-700);
+}
+
+.status-badge.status-rejected {
+  background: var(--dgp-error-100);
+  color: var(--dgp-error-700);
+}
+
+.status-badge.status-published {
+  background: var(--dgp-primary-100);
+  color: var(--dgp-primary-700);
+}
+
+.manage-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--dgp-spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--dgp-spacing-md);
+}
+
+.manage-pagination span {
+  color: var(--dgp-neutral-500);
+}
+
+.manage-pagination-buttons {
+  display: flex;
+  gap: var(--dgp-spacing-sm);
+}

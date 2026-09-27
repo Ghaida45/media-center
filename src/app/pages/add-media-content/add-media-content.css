@@ -1,0 +1,184 @@
+.add-content-page {
+  padding-top: var(--dgp-spacing-3xl);
+  padding-bottom: var(--dgp-spacing-6xl);
+}
+
+.add-content-form {
+  margin-top: var(--dgp-spacing-2xl);
+  padding: var(--dgp-spacing-2xl);
+  border: 1px solid var(--dgp-neutral-200);
+  border-radius: var(--dgp-radius-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--dgp-spacing-xl);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--dgp-spacing-xl);
+  flex-wrap: wrap;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dgp-spacing-sm);
+}
+
+.form-row .form-field {
+  flex: 1 1 220px;
+}
+
+#bodyAr {
+  text-align: left;
+}
+
+.category-checkboxes {
+  display: flex;
+  gap: var(--dgp-spacing-xl);
+}
+
+.category-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--dgp-spacing-sm);
+  cursor: pointer;
+}
+
+.category-hint {
+  color: var(--dgp-neutral-500);
+}
+
+.category-error {
+  color: var(--dgp-error-700);
+}
+
+.add-content-textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.file-dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dgp-spacing-xs);
+  padding: var(--dgp-spacing-3xl);
+  border: 2px dashed var(--dgp-neutral-300);
+  border-radius: var(--dgp-radius-8);
+  color: var(--dgp-primary-700);
+  text-align: center;
+}
+
+.file-dropzone .material-symbols-outlined {
+  font-size: 32px;
+}
+
+.file-hint {
+  color: var(--dgp-neutral-500);
+}
+
+.file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.add-content-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--dgp-spacing-md);
+  padding-top: var(--dgp-spacing-lg);
+  border-top: 1px solid var(--dgp-neutral-200);
+}
+
+.dgp-button.success {
+  background-color: var(--dgp-success-600);
+  color: var(--dgp-white);
+  text-decoration: none;
+}
+
+.dgp-button.success:hover {
+  background-color: var(--dgp-success-700);
+  color: var(--dgp-white);
+}
+
+.dgp-button.success:active {
+  background-color: var(--dgp-success-900);
+  color: var(--dgp-white);
+}
+
+.dgp-button.warning {
+  background-color: var(--dgp-warning-500);
+  color: var(--dgp-white);
+  text-decoration: none;
+}
+
+.dgp-button.warning:hover {
+  background-color: var(--dgp-warning-600);
+  color: var(--dgp-white);
+}
+
+.dgp-button.warning:active {
+  background-color: var(--dgp-warning-700);
+  color: var(--dgp-white);
+}
+
+.form-modal-overlay {
+  padding: var(--dgp-spacing-xl);
+}
+
+.form-modal {
+  background-color: var(--dgp-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dgp-spacing-md);
+  padding: var(--dgp-spacing-3xl);
+  border-radius: var(--dgp-radius-16);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.form-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--dgp-radius-circle);
+}
+
+.form-modal-icon.success {
+  background: var(--dgp-success-100);
+  color: var(--dgp-success-600);
+}
+
+.form-modal-icon.warning {
+  background: var(--dgp-warning-100);
+  color: var(--dgp-warning-600);
+}
+
+.form-modal-icon.error {
+  background: var(--dgp-error-100);
+  color: var(--dgp-error-600);
+}
+
+.form-modal-description {
+  color: var(--dgp-neutral-600);
+}
+
+.form-modal-actions {
+  display: flex;
+  gap: var(--dgp-spacing-md);
+  width: 100%;
+  margin-top: var(--dgp-spacing-sm);
+}
+
+.form-modal-actions .dgp-button {
+  flex: 1;
+}
