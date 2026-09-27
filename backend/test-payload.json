@@ -1,0 +1,12 @@
+{
+  "titleEn": "Test",
+  "titleAr": "تجربة",
+  "type": "News",
+  "status": "draft",
+  "category": ["NDMO"],
+  "date": "2026-01-01T00:00:00.000Z",
+  "bodyEn": "Hello",
+  "bodyAr": "مرحبا",
+  "sender": "You",
+  "sentDate": "2026-01-01T00:00:00.000Z"
+}
