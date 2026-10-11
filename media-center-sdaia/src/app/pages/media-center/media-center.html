@@ -63,9 +63,9 @@
                         @if (userRoleService.role() === 'admin') {
                         <div class="advanced-filter-section">
                             <span class="dgp-text-sm dgp-weight-medium">{{ t('media.contentStatus') }}</span>
-                            <div class="media-tag-filters">
+                            <div class="media-category-filters">
                                 @for (status of contentStatuses; track status) {
-                                <button type="button" class="media-tag-pill status-filter-pill"
+                                <button type="button" class="media-category-pill status-filter-pill"
                                     [class.active]="isStatusFilterActive(status)" (click)="toggleStatusFilter(status)">
                                     {{ statusFilterLabel(status) }}
                                 </button>
@@ -76,11 +76,11 @@
 
                         <div class="advanced-filter-section">
                             <span class="dgp-text-sm dgp-weight-medium">{{ t('media.category') }}</span>
-                            <div class="media-tag-filters">
-                                @for (tag of allTags; track tag) {
-                                <button type="button" class="media-tag-pill" [class.active]="isTagFilterActive(tag)"
-                                    (click)="toggleTagFilter(tag)">
-                                    {{ tag }}
+                            <div class="media-category-filters">
+                                @for (category of allCategories; track category) {
+                                <button type="button" class="media-category-pill" [class]="'category-' + category.toLowerCase()"
+                                    [class.active]="isCategoryFilterActive(category)" (click)="toggleCategoryFilter(category)">
+                                    {{ category }}
                                 </button>
                                 }
                             </div>
@@ -107,59 +107,77 @@
                     </div>
                 </div>
 
-                <div class="media-tag-filters">
-                    @for (tag of allTags; track tag) {
-                    <button type="button" class="media-tag-pill" [class.active]="isTagFilterActive(tag)"
-                        (click)="toggleTagFilter(tag)">
-                        {{ tag }}
+                <div class="media-category-filters">
+                    @for (category of allCategories; track category) {
+                    <button type="button" class="media-category-pill" [class]="'category-' + category.toLowerCase()"
+                        [class.active]="isCategoryFilterActive(category)" (click)="toggleCategoryFilter(category)">
+                        {{ category }}
                     </button>
                     }
                 </div>
 
                 <div class="dgp-dropdown-toggler media-sort" [class.show]="isSortOpen">
                     <button type="button" class="dgp-button secondry transparent sm" (click)="toggleSortDropdown()">
-                        <span class="text-md">{{ t('media.sortPrefix') }} {{ sortOrder === 'newest' ? t('media.sortNewest') : t('media.sortOldest')
-                            }}</span>
+                        <span class="text-md">{{ t('media.sortPrefix') }} {{ t(sortOrderKeys[sortOrder]) }}</span>
                     </button>
-                    <div class="dgp-dropdown">
-                        <a href="javascript:void(0)" (click)="setSortOrder('newest')">{{ t('media.sortNewest') }}</a>
-                        <a href="javascript:void(0)" (click)="setSortOrder('oldest')">{{ t('media.sortOldest') }}</a>
+                    <div class="dgp-dropdown sort-dropdown-panel">
+                        <div class="sort-dropdown-header">
+                            <h6 class="dgp-text-md dgp-weight-bold">{{ t('media.sortTitle') }}</h6>
+                        </div>
+                        <a href="javascript:void(0)" class="sort-dropdown-option" [class.active]="sortOrder === 'newest'"
+                            (click)="setSortOrder('newest')">{{ t('media.sortNewest') }}</a>
+                        <a href="javascript:void(0)" class="sort-dropdown-option" [class.active]="sortOrder === 'oldest'"
+                            (click)="setSortOrder('oldest')">{{ t('media.sortOldest') }}</a>
+                        <a href="javascript:void(0)" class="sort-dropdown-option" [class.active]="sortOrder === 'az'"
+                            (click)="setSortOrder('az')">{{ t('media.sortAZ') }}</a>
+                        <a href="javascript:void(0)" class="sort-dropdown-option" [class.active]="sortOrder === 'za'"
+                            (click)="setSortOrder('za')">{{ t('media.sortZA') }}</a>
                     </div>
                 </div>
             </div>
         </div>
 
+        @if (loading()) {
+        <div class="loading-spinner"></div>
+        } @else if (filteredItems.length === 0) {
+        <div class="empty-state">
+            <span class="material-symbols-outlined empty-state-icon">inbox</span>
+            <p class="dgp-text-md">{{ t('media.noContent') }}</p>
+        </div>
+        } @else {
         <div class="media-grid">
-            @for (item of visibleItems; track item.title) {
+            @for (item of visibleItems; track item.id) {
             <div class="media-card clickable" (click)="onCardClick(item)" (keydown.enter)="onCardClick(item)"
                 tabindex="0" role="button">
-                <div class="media-card-image" [class.video-thumb]="item.isVideo">
-                    @if (item.isVideo) {
-                    <video [src]="demoVideoUrl" muted autoplay playsinline (loadeddata)="pauseThumbVideo($event)"
+                <div class="media-card-image" [class.video-thumb]="item.type === 'Video'">
+                    @if (item.type === 'Video' && item.fileUrl) {
+                    <video [src]="item.fileUrl" muted autoplay playsinline (loadeddata)="pauseThumbVideo($event)"
                         class="media-card-thumb-video"></video>
                     <span class="media-play-icon material-symbols-outlined">play_circle</span>
+                    } @else if (item.fileUrl) {
+                    <img [src]="item.fileUrl" [alt]="displayTitle(item)" class="media-card-thumb-image" />
                     }
-                    @if (userRoleService.role() === 'admin') {
-                    <button type="button" class="visibility-toggle" [class.is-hidden]="item.hidden"
+                    @if (userRoleService.role() === 'admin' && (item.status === 'published' || item.status === 'hidden')) {
+                    <button type="button" class="visibility-toggle" [class.is-hidden]="item.status !== 'published'"
                         (click)="toggleHidden(item, $event)">
-                        {{ item.hidden ? t('media.unhide') : t('media.hide') }}
+                        {{ item.status !== 'published' ? t('media.unhide') : t('media.hide') }}
                     </button>
                     }
                 </div>
-                <h5 class="dgp-text-lg dgp-weight-bold">{{ item.title }}</h5>
-                <div class="media-card-tags">
-                    @for (tag of item.tags; track tag) {
-                    <span class="media-tag-pill static" [class]="'tag-' + tag.toLowerCase()">{{ tag }}</span>
+                <h5 class="dgp-text-lg dgp-weight-bold">{{ displayTitle(item) }}</h5>
+                <div class="media-card-categories">
+                    @for (category of item.category; track category) {
+                    <span class="media-category-pill static" [class]="'category-' + category.toLowerCase()">{{ category }}</span>
                     }
                 </div>
                 <div class="media-card-date">
                     @if (userRoleService.role() === 'admin') {
-                    <span class="visibility-status" [class.is-hidden]="item.hidden">
-                        {{ item.hidden ? t('media.hiddenStatus') : t('media.published') }}
+                    <span class="visibility-status" [class]="cardStatusClass(item)">
+                        {{ cardStatusLabel(item) }}
                     </span>
                     }
                     <span class="material-symbols-outlined">calendar_today</span>
-                    {{ formatDate(item.date) }}
+                    {{ formatDate(item.publishDate) }}
                 </div>
             </div>
             }
@@ -169,6 +187,7 @@
         <div class="media-load-more">
             <button type="button" class="dgp-button secondry outlined" (click)="loadMore()">{{ t('media.loadMore') }}</button>
         </div>
+        }
         }
     </div>
 </section>
@@ -180,16 +199,20 @@
         <span class="material-symbols-outlined">close</span>
     </button>
     <div class="photo-lightbox-content" (click)="$event.stopPropagation()">
+        @if (openPhoto.fileUrl) {
+        <img [src]="openPhoto.fileUrl" [alt]="displayTitle(openPhoto)" class="photo-lightbox-image" />
+        } @else {
         <div class="photo-lightbox-image"></div>
-        <h5 class="dgp-text-lg dgp-weight-bold">{{ openPhoto.title }}</h5>
-        <div class="media-card-tags">
-            @for (tag of openPhoto.tags; track tag) {
-            <span class="media-tag-pill static" [class]="'tag-' + tag.toLowerCase()">{{ tag }}</span>
+        }
+        <h5 class="dgp-text-lg dgp-weight-bold">{{ displayTitle(openPhoto) }}</h5>
+        <div class="media-card-categories">
+            @for (category of openPhoto.category; track category) {
+            <span class="media-category-pill static" [class]="'category-' + category.toLowerCase()">{{ category }}</span>
             }
         </div>
         <div class="media-card-date">
             <span class="material-symbols-outlined">calendar_today</span>
-            {{ formatDate(openPhoto.date) }}
+            {{ formatDate(openPhoto.publishDate) }}
         </div>
     </div>
 </div>
@@ -203,18 +226,18 @@
     </button>
     <div class="photo-lightbox-content" (click)="$event.stopPropagation()">
         <video controls class="photo-lightbox-video" autoplay>
-            <source [src]="demoVideoUrl" type="video/mp4" />
+            <source [src]="openVideo.fileUrl" type="video/mp4" />
             {{ t('media.videoNotSupported') }}
         </video>
-        <h5 class="dgp-text-lg dgp-weight-bold">{{ openVideo.title }}</h5>
-        <div class="media-card-tags">
-            @for (tag of openVideo.tags; track tag) {
-            <span class="media-tag-pill static" [class]="'tag-' + tag.toLowerCase()">{{ tag }}</span>
+        <h5 class="dgp-text-lg dgp-weight-bold">{{ displayTitle(openVideo) }}</h5>
+        <div class="media-card-categories">
+            @for (category of openVideo.category; track category) {
+            <span class="media-category-pill static" [class]="'category-' + category.toLowerCase()">{{ category }}</span>
             }
         </div>
         <div class="media-card-date">
             <span class="material-symbols-outlined">calendar_today</span>
-            {{ formatDate(openVideo.date) }}
+            {{ formatDate(openVideo.publishDate) }}
         </div>
     </div>
 </div>
@@ -223,7 +246,7 @@
 @if (itemPendingVisibilityChange) {
 <div class="dgp-overlay visibility-modal-overlay" (click)="cancelVisibilityChange()"
     (keydown.escape)="cancelVisibilityChange()" tabindex="-1">
-    @if (!itemPendingVisibilityChange.hidden) {
+    @if (itemPendingVisibilityChange.status === 'published') {
     <div class="visibility-modal" (click)="$event.stopPropagation()">
         <div class="visibility-modal-icon warning">
             <span class="material-symbols-outlined">priority_high</span>
@@ -233,8 +256,14 @@
             {{ t('media.hideContentDesc') }}
         </p>
         <div class="visibility-modal-actions">
-            <button type="button" class="dgp-button secondry outlined" (click)="cancelVisibilityChange()">{{ t('media.cancel') }}</button>
-            <button type="button" class="dgp-button warning" (click)="confirmVisibilityChange()">{{ t('media.confirmHide') }}</button>
+            <button type="button" class="dgp-button secondry outlined" [disabled]="visibilityChangeProcessing()" (click)="cancelVisibilityChange()">{{ t('media.cancel') }}</button>
+            <button type="button" class="dgp-button warning" [disabled]="visibilityChangeProcessing()" (click)="confirmVisibilityChange()">
+                @if (visibilityChangeProcessing()) {
+                <span class="button-spinner"></span>
+                } @else {
+                {{ t('media.confirmHide') }}
+                }
+            </button>
         </div>
     </div>
     } @else {
@@ -247,8 +276,14 @@
             {{ t('media.unhideContentDesc') }}
         </p>
         <div class="visibility-modal-actions">
-            <button type="button" class="dgp-button secondry outlined" (click)="cancelVisibilityChange()">{{ t('media.cancel') }}</button>
-            <button type="button" class="dgp-button success" (click)="confirmVisibilityChange()">{{ t('media.confirmUnhide') }}</button>
+            <button type="button" class="dgp-button secondry outlined" [disabled]="visibilityChangeProcessing()" (click)="cancelVisibilityChange()">{{ t('media.cancel') }}</button>
+            <button type="button" class="dgp-button success" [disabled]="visibilityChangeProcessing()" (click)="confirmVisibilityChange()">
+                @if (visibilityChangeProcessing()) {
+                <span class="button-spinner"></span>
+                } @else {
+                {{ t('media.confirmUnhide') }}
+                }
+            </button>
         </div>
     </div>
     }

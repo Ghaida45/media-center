@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ContentService } from './content.service.js';
 import { CreateContentDto } from './dto/create-content.dto.js';
 import { UpdateContentDto } from './dto/update-content.dto.js';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('content')
 export class ContentController {
@@ -10,6 +12,12 @@ export class ContentController {
   @Post()
   create(@Body() createContentDto: CreateContentDto) {
     return this.contentService.create(createContentDto);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return this.contentService.uploadFile(file);
   }
 
   @Get()

@@ -1,4 +1,6 @@
-@if (item) {
+@if (loading()) {
+<div class="loading-spinner"></div>
+} @else if (item) {
 <ul class="dgp-breadcrumb">
     <li>
         <a routerLink="/" class="dgp-text-sm">{{ t('common.home') }}</a>
@@ -10,7 +12,7 @@
         <a routerLink="/media-center/review" class="dgp-text-sm">{{ t('review.breadcrumb') }}</a>
     </li>
     <li>
-        <a href="javascript:void(0)" class="dgp-text-sm">{{ item.title }}</a>
+        <a href="javascript:void(0)" class="dgp-text-sm">{{ displayTitle(item) }}</a>
     </li>
 </ul>
 
@@ -31,12 +33,12 @@
             <div class="review-details-fields">
                 <div class="review-details-field">
                     <span class="dgp-text-sm dgp-weight-medium">{{ t('reviewDetails.titleArabic') }}</span>
-                    <span class="dgp-text-md">{{ item.titleAr || item.title }}</span>
+                    <span class="dgp-text-md">{{ item.titleAr }}</span>
                 </div>
 
                 <div class="review-details-field">
                     <span class="dgp-text-sm dgp-weight-medium">{{ t('reviewDetails.titleEnglish') }}</span>
-                    <span class="dgp-text-md">{{ item.title }}</span>
+                    <span class="dgp-text-md">{{ item.titleEn }}</span>
                 </div>
 
                 <div class="review-details-field">
@@ -46,16 +48,26 @@
 
                 <div class="review-details-field">
                     <span class="dgp-text-sm dgp-weight-medium">{{ t('reviewDetails.category') }}</span>
-                    <div class="media-card-tags">
-                        @for (tag of item.tags; track tag) {
-                        <span class="media-tag-pill static" [class]="'tag-' + tag.toLowerCase()">{{ tag }}</span>
+                    <div class="media-card-categories">
+                        @for (category of item.category; track category) {
+                        <span class="media-category-pill static" [class]="'category-' + category.toLowerCase()">{{ category }}</span>
                         }
                     </div>
                 </div>
 
                 <div class="review-details-field">
                     <span class="dgp-text-sm dgp-weight-medium">{{ t('reviewDetails.mainImage') }}</span>
+                    @if (item.fileUrl) {
+                    <div class="review-details-hero review-details-hero-media">
+                        @if (item.type === 'Video') {
+                        <video [src]="item.fileUrl" controls></video>
+                        } @else {
+                        <img [src]="item.fileUrl" [alt]="displayTitle(item)" />
+                        }
+                    </div>
+                    } @else {
                     <div class="review-details-hero"></div>
+                    }
                 </div>
 
                 <div class="review-details-field">
@@ -65,14 +77,14 @@
 
                 <div class="review-details-field">
                     <span class="dgp-text-sm dgp-weight-medium">{{ t('reviewDetails.contentEnglish') }}</span>
-                    <span class="dgp-text-md">{{ item.bodyParagraphs.join(' ') }}</span>
+                    <span class="dgp-text-md">{{ item.bodyEn }}</span>
                 </div>
 
                 <div class="review-details-dates">
                     @if (item.expiryDate) {
                     <span class="dgp-text-sm">{{ t('reviewDetails.expiryDate') }} <strong>{{ formatDate(item.expiryDate) }}</strong></span>
                     }
-                    <span class="dgp-text-sm">{{ t('reviewDetails.publishDate') }} <strong>{{ formatDate(item.date) }}</strong></span>
+                    <span class="dgp-text-sm">{{ t('reviewDetails.publishDate') }} <strong>{{ formatDate(item.publishDate ?? '') }}</strong></span>
                 </div>
             </div>
 
@@ -96,8 +108,14 @@
             {{ t('reviewDetails.approveContentDesc') }}
         </p>
         <div class="approve-modal-actions">
-            <button type="button" class="dgp-button secondry outlined" (click)="cancelApprove()">{{ t('reviewDetails.cancel') }}</button>
-            <button type="button" class="dgp-button success" (click)="confirmApprove()">{{ t('reviewDetails.confirmApproval') }}</button>
+            <button type="button" class="dgp-button secondry outlined" [disabled]="processing()" (click)="cancelApprove()">{{ t('reviewDetails.cancel') }}</button>
+            <button type="button" class="dgp-button success" [disabled]="processing()" (click)="confirmApprove()">
+                @if (processing()) {
+                <span class="button-spinner"></span>
+                } @else {
+                {{ t('reviewDetails.confirmApproval') }}
+                }
+            </button>
         </div>
     </div>
 </div>
@@ -114,15 +132,27 @@
             {{ t('reviewDetails.rejectContentDesc') }}
         </p>
         <div class="reject-modal-field">
-            <label class="dgp-text-sm dgp-weight-medium" for="rejectionReason">{{ t('reviewDetails.rejectionReasonLabel') }} *</label>
-            <textarea id="rejectionReason" class="reject-modal-textarea" rows="3"
+            <label class="dgp-text-sm dgp-weight-medium" for="rejectionReason">{{ t('reviewDetails.rejectionReasonLabel') }} <span class="required-asterisk">*</span></label>
+            <textarea id="rejectionReason" class="reject-modal-textarea" rows="3" [maxlength]="REJECTION_REASON_MAX_LENGTH"
                 [placeholder]="t('reviewDetails.rejectionReasonPlaceholder')" [ngModel]="rejectionReasonInput()"
-                (ngModelChange)="rejectionReasonInput.set($event)"></textarea>
+                (ngModelChange)="onRejectionReasonChange($event)"></textarea>
+            @if (rejectionReasonLengthError() === 'short') {
+            <span class="category-error dgp-text-sm">{{ t('reviewDetails.rejectionReasonTooShortError') }}</span>
+            }
+            @if (rejectionReasonLengthError() === 'long') {
+            <span class="category-error dgp-text-sm">{{ t('reviewDetails.rejectionReasonTooLongError') }}</span>
+            }
         </div>
         <div class="reject-modal-actions">
-            <button type="button" class="dgp-button secondry outlined" (click)="cancelReject()">{{ t('reviewDetails.cancel') }}</button>
-            <button type="button" class="dgp-button error" [disabled]="!rejectionReasonInput().trim()"
-                (click)="confirmReject()">{{ t('reviewDetails.confirmRejection') }}</button>
+            <button type="button" class="dgp-button secondry outlined" [disabled]="processing()" (click)="cancelReject()">{{ t('reviewDetails.cancel') }}</button>
+            <button type="button" class="dgp-button error" [disabled]="!rejectionReasonInput().trim() || processing() || !!rejectionReasonLengthError()"
+                (click)="confirmReject()">
+                @if (processing()) {
+                <span class="button-spinner"></span>
+                } @else {
+                {{ t('reviewDetails.confirmRejection') }}
+                }
+            </button>
         </div>
     </div>
 </div>

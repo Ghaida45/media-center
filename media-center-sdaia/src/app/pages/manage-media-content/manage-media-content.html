@@ -31,6 +31,14 @@
             }
         </div>
 
+        @if (loading()) {
+        <div class="loading-spinner"></div>
+        } @else if (filteredItems.length === 0) {
+        <div class="empty-state">
+            <span class="material-symbols-outlined empty-state-icon">inbox</span>
+            <p class="dgp-text-md">{{ t('manage.noContent') }}</p>
+        </div>
+        } @else {
         <div class="manage-table-wrapper">
         <table class="manage-table">
             <thead>
@@ -43,19 +51,19 @@
                 </tr>
             </thead>
             <tbody>
-                @for (item of pagedItems; track item.title) {
+                @for (item of pagedItems; track item.id) {
                 <tr>
-                    <td>{{ item.title }}</td>
+                    <td>{{ displayTitle(item) }}</td>
                     <td>{{ item.type }}</td>
                     <td>
                         <span class="status-badge" [class]="'status-' + item.status">
                             {{ t(statusLabelKeys[item.status]) }}
                         </span>
                     </td>
-                    <td>{{ formatDate(item.date) }}</td>
+                    <td>{{ formatDate(item.sentDate ?? '') }}</td>
                     <td>
                         <a [routerLink]="item.status === 'draft' ? ['/media-center/manage/edit', item.id] : ['/media-center/manage', item.id]"
-                            class="dgp-button secondry outlined sm">{{ t('manage.view') }}</a>
+                            class="dgp-button secondry outlined sm view-button">{{ t('manage.view') }}</a>
                     </td>
                 </tr>
                 }
@@ -74,5 +82,6 @@
             </div>
         </div>
         </div>
+        }
     </div>
 </section>

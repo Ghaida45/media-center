@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ContentStatus, MEDIA_CONTENT_ITEMS } from '../../data/media-content-items';
+import { ContentStatus, ContentItem } from '../../data/media-content-items';
 import { LanguageService } from '../../services/language.service';
+import { ContentApi } from '../../services/content-api';
 
 type StatusFilter = 'all' | ContentStatus;
 
@@ -11,10 +12,29 @@ type StatusFilter = 'all' | ContentStatus;
   styleUrl: './manage-media-content.css',
   templateUrl: './manage-media-content.html',
 })
-export class ManageMediaContent {
+export class ManageMediaContent implements OnInit{
   constructor(readonly languageService: LanguageService) {}
 
-  readonly items = MEDIA_CONTENT_ITEMS;
+  private readonly contentApi = inject(ContentApi);
+  items = signal<ContentItem[]>([]);
+  loading = signal(true);
+
+  ngOnInit(): void {
+    this.contentApi.getAll().subscribe({
+      next: (rows: any[]) => {
+        this.items.set(rows.map((row) => ({
+          ...row,
+        })));
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
+  }
+
+  displayTitle(item: ContentItem): string {
+    return (this.languageService.lang() === 'ar' && item.titleAr ? item.titleAr : item.titleEn) ?? '';
+  }
+
   readonly pageSize = 5;
 
   readonly statusFilters: { id: StatusFilter; key: string }[] = [
@@ -23,6 +43,8 @@ export class ManageMediaContent {
     { id: 'approved', key: 'manage.filterApproved' },
     { id: 'rejected', key: 'manage.filterRejected' },
     { id: 'published', key: 'manage.filterPublished' },
+    { id: 'hidden', key: 'manage.filterHidden' },
+    { id: 'expired', key: 'manage.filterExpired' },
     { id: 'draft', key: 'manage.filterDraft' },
   ];
 
@@ -32,6 +54,8 @@ export class ManageMediaContent {
     approved: 'manage.filterApproved',
     rejected: 'manage.filterRejected',
     published: 'manage.filterPublished',
+    hidden: 'manage.filterHidden',
+    expired: 'manage.filterExpired',
   };
 
   activeStatusFilter: StatusFilter = 'all';
@@ -48,9 +72,9 @@ export class ManageMediaContent {
 
   get filteredItems() {
     if (this.activeStatusFilter === 'all') {
-      return this.items;
+      return this.items();
     }
-    return this.items.filter((item) => item.status === this.activeStatusFilter);
+    return this.items().filter((item) => item.status === this.activeStatusFilter);
   }
 
   get pagedItems() {

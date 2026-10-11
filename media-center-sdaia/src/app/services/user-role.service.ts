@@ -4,7 +4,7 @@ export type UserRole = 'user' | 'employee' | 'admin';
 
 @Injectable({ providedIn: 'root' })
 export class UserRoleService {
-  readonly role = signal<UserRole>('employee');
+  readonly role = signal<UserRole>('user');
 
   setRole(role: UserRole) {
     this.role.set(role);

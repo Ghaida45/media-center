@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ContentItem, ContentStatus, ContentType, MEDIA_CONTENT_ITEMS } from '../../data/media-content-items';
+import { ContentItem, ContentStatus, ContentType } from '../../data/media-content-items';
 import { LanguageService } from '../../services/language.service';
+import { ContentApi } from '../../services/content-api';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   imports: [FormsModule, RouterLink],
@@ -10,8 +12,20 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './add-media-content.css',
   templateUrl: './add-media-content.html',
 })
-export class AddMediaContent {
-  readonly allTags = ['SDAIA', 'NDMO', 'PDPL'];
+export class AddMediaContent implements OnDestroy {
+  readonly allCategories = ['SDAIA', 'NDMO', 'PDPL'];
+  private readonly contentApi = inject(ContentApi);
+  private readonly toast = inject(ToastService);
+
+  readonly TITLE_MIN_LENGTH = 3;
+  readonly TITLE_MAX_LENGTH = 150;
+  readonly BODY_MIN_LENGTH = 20;
+  readonly BODY_MAX_LENGTH = 5000;
+
+  titleArLengthError: 'short' | 'long' | null = null;
+  titleEnLengthError: 'short' | 'long' | null = null;
+  bodyArLengthError: 'short' | 'long' | null = null;
+  bodyEnLengthError: 'short' | 'long' | null = null;
 
   editingId: string | null = null;
   contentType: ContentType = 'News';
@@ -21,15 +35,31 @@ export class AddMediaContent {
   titleEn = '';
   bodyAr = '';
   bodyEn = '';
-  selectedTags = new Set<string>();
+  selectedCategories = new Set<string>();
   fileName: string | null = null;
+  selectedFile: File | null = null;
+  filePreviewUrl: string | null = null;
+  private previewUrlIsOwned = false;
   showCategoryError = false;
+  showPublishDateError = false;
+  showPublishDatePastError = false;
+  showExpiryDateError = false;
+  showTitleArError = false;
+  showTitleEnError = false;
+  showBodyArError = false;
+  showBodyEnError = false;
+  showFileError = false;
+  showFileSizeError = false;
   showSubmitModal = false;
   showDraftModal = false;
   showCancelModal = false;
+  submitting = signal(false);
+  loading = signal(false);
 
   private existingSender: string | null = null;
   private existingSentDate: string | null = null;
+  private existingFileUrl: string | null = null;
+  private existingStatus: ContentStatus | null = null;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -38,20 +68,34 @@ export class AddMediaContent {
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      const existing = MEDIA_CONTENT_ITEMS.find((item) => item.id === id);
-      if (existing) {
-        this.editingId = existing.id;
-        this.contentType = existing.type;
-        this.publishDate = existing.date;
-        this.expiryDate = existing.expiryDate ?? '';
-        this.titleEn = existing.title;
-        this.titleAr = existing.titleAr ?? '';
-        this.bodyEn = existing.bodyParagraphs.join('\n\n');
-        this.bodyAr = existing.bodyAr ?? '';
-        existing.tags.forEach((tag) => this.selectedTags.add(tag));
-        this.existingSender = existing.sender;
-        this.existingSentDate = existing.sentDate;
-      }
+      this.loading.set(true);
+      this.contentApi.getOne(id).subscribe({
+        next: (existing) => {
+          this.editingId = existing.id;
+          this.contentType = existing.type;
+          // Backend returns full timestamptz strings ("2026-10-20 00:00:00+00");
+          // <input type="date"> only accepts a bare "YYYY-MM-DD".
+          this.publishDate = existing.publishDate?.slice(0, 10) ?? '';
+          this.expiryDate = existing.expiryDate?.slice(0, 10) ?? '';
+          this.titleEn = existing.titleEn ?? '';
+          this.titleAr = existing.titleAr ?? '';
+          this.bodyEn = existing.bodyEn ?? '';
+          this.bodyAr = existing.bodyAr ?? '';
+          existing.category.forEach((category) => this.selectedCategories.add(category));
+          this.titleArLengthError = this.checkLength(this.titleAr, this.TITLE_MIN_LENGTH, this.TITLE_MAX_LENGTH);
+          this.titleEnLengthError = this.checkLength(this.titleEn, this.TITLE_MIN_LENGTH, this.TITLE_MAX_LENGTH);
+          this.bodyArLengthError = this.checkLength(this.bodyAr, this.BODY_MIN_LENGTH, this.BODY_MAX_LENGTH);
+          this.bodyEnLengthError = this.checkLength(this.bodyEn, this.BODY_MIN_LENGTH, this.BODY_MAX_LENGTH);
+          this.existingSender = existing.sender;
+          this.existingSentDate = existing.sentDate;
+          this.existingFileUrl = existing.fileUrl ?? null;
+          this.fileName = existing.fileUrl ? existing.fileUrl.split('/').pop() ?? null : null;
+          this.filePreviewUrl = existing.fileUrl ?? null;
+          this.existingStatus = existing.status;
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
     }
   }
 
@@ -59,130 +103,110 @@ export class AddMediaContent {
     return this.languageService.t(key);
   }
 
-  private get isAr(): boolean {
-    return this.languageService.lang() === 'ar';
-  }
+  onContentTypeChange(value: ContentType) {
+    this.contentType = value;
 
-  get titleWord(): string {
-    if (this.contentType === 'Photo') return 'Photo';
-    if (this.contentType === 'Video') return 'Video';
-    return 'Content';
-  }
-
-  private get titleNounAr(): string {
-    if (this.contentType === 'Photo') return 'الصورة';
-    if (this.contentType === 'Video') return 'الفيديو';
-    return 'المحتوى';
-  }
-
-  private get bodyNounAr(): string {
-    if (this.contentType === 'Photo') return 'محتوى الصورة';
-    if (this.contentType === 'Video') return 'محتوى الفيديو';
-    return 'المحتوى';
-  }
-
-  get titleArabicLabel(): string {
-    return this.isAr ? `عنوان ${this.titleNounAr} (عربي) *` : `${this.titleWord} title (Arabic) *`;
-  }
-
-  get titleEnglishLabel(): string {
-    return this.isAr ? `عنوان ${this.titleNounAr} (إنجليزي) *` : `${this.titleWord} title (English) *`;
-  }
-
-  get titleArPlaceholder(): string {
-    return this.isAr
-      ? `أدخل عنوان ${this.titleNounAr} باللغة العربية`
-      : `Enter ${this.titleWord.toLowerCase()} title in Arabic`;
-  }
-
-  get titleEnPlaceholder(): string {
-    return this.isAr
-      ? `أدخل عنوان ${this.titleNounAr} باللغة الإنجليزية`
-      : `Enter ${this.titleWord.toLowerCase()} title in English`;
-  }
-
-  get bodyArabicLabel(): string {
-    return this.isAr ? `${this.bodyNounAr} (عربي) *` : `${this.bodyWord} (Arabic) *`;
-  }
-
-  get bodyEnglishLabel(): string {
-    return this.isAr ? `${this.bodyNounAr} (إنجليزي) *` : `${this.bodyWord} (English) *`;
-  }
-
-  get bodyArPlaceholder(): string {
-    return this.isAr ? `أدخل ${this.bodyNounAr} باللغة العربية` : `Enter ${this.bodyWord.toLowerCase()} in Arabic`;
-  }
-
-  get bodyEnPlaceholder(): string {
-    return this.isAr
-      ? `أدخل ${this.bodyNounAr} باللغة الإنجليزية`
-      : `Enter ${this.bodyWord.toLowerCase()} in English`;
-  }
-
-  get bodyWord(): string {
-    if (this.contentType === 'Photo') return 'Photo content';
-    if (this.contentType === 'Video') return 'Video content';
-    return 'Content';
-  }
-
-  get fileFieldLabel(): string {
-    if (this.isAr) {
-      if (this.contentType === 'Photo') return 'الصورة';
-      if (this.contentType === 'Video') return 'ملف الفيديو';
-      return 'الصورة الرئيسية';
+    this.publishDate = '';
+    this.expiryDate = '';
+    this.titleAr = '';
+    this.titleEn = '';
+    this.bodyAr = '';
+    this.bodyEn = '';
+    this.selectedCategories.clear();
+    this.fileName = null;
+    this.selectedFile = null;
+    if (this.previewUrlIsOwned && this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
     }
-    if (this.contentType === 'Photo') return 'Image';
-    if (this.contentType === 'Video') return 'Video file';
-    return 'Main image';
+    this.filePreviewUrl = null;
+    this.previewUrlIsOwned = false;
+    this.existingFileUrl = null;
+
+    this.showCategoryError = false;
+    this.showPublishDateError = false;
+    this.showPublishDatePastError = false;
+    this.showExpiryDateError = false;
+    this.showTitleArError = false;
+    this.showTitleEnError = false;
+    this.showBodyArError = false;
+    this.showBodyEnError = false;
+    this.showFileError = false;
+    this.showFileSizeError = false;
+    this.titleArLengthError = null;
+    this.titleEnLengthError = null;
+    this.bodyArLengthError = null;
+    this.bodyEnLengthError = null;
   }
 
-  get fileAcceptHint(): string {
-    if (this.isAr) {
-      if (this.contentType === 'Video') return 'MP4, MOV, AVI — بحد أقصى 100 ميجابايت';
-      if (this.contentType === 'Photo') return 'JPG, PNG, WEBP — بحد أقصى 10 ميجابايت';
-      return 'JPG, PNG — بحد أقصى 10 ميجابايت';
-    }
-    if (this.contentType === 'Video') return 'MP4, MOV, AVI — max size 100MB';
-    if (this.contentType === 'Photo') return 'JPG, PNG, WEBP — max size 10MB';
-    return 'JPG, PNG — max size 10MB';
+  get todayDate(): string {
+    return new Date().toISOString().slice(0, 10);
   }
 
   get fileAccept(): string {
     return this.contentType === 'Video' ? 'video/mp4,video/quicktime,video/x-msvideo' : 'image/jpeg,image/png,image/webp';
   }
 
-  get fileRequired(): boolean {
-    return this.contentType === 'Video';
+  private get maxFileSizeBytes(): number {
+    return this.contentType === 'Video' ? 400 * 1024 * 1024 : 10 * 1024 * 1024;
   }
 
-  toggleTag(tag: string) {
-    if (this.selectedTags.has(tag)) {
-      this.selectedTags.delete(tag);
+  private acceptFile(file: File) {
+    if (file.size > this.maxFileSizeBytes) {
+      this.showFileSizeError = true;
+      return;
+    }
+    this.fileName = file.name;
+    this.selectedFile = file;
+    this.showFileError = false;
+    this.showFileSizeError = false;
+    if (this.previewUrlIsOwned && this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
+    }
+    this.filePreviewUrl = URL.createObjectURL(file);
+    this.previewUrlIsOwned = true;
+  }
+
+  ngOnDestroy() {
+    if (this.previewUrlIsOwned && this.filePreviewUrl) {
+      URL.revokeObjectURL(this.filePreviewUrl);
+    }
+  }
+
+  toggleCategory(category: string) {
+    if (this.selectedCategories.has(category)) {
+      this.selectedCategories.delete(category);
     } else {
-      this.selectedTags.add(tag);
+      this.selectedCategories.add(category);
     }
     this.showCategoryError = false;
   }
 
-  isTagSelected(tag: string) {
-    return this.selectedTags.has(tag);
+  isCategorySelected(category: string) {
+    return this.selectedCategories.has(category);
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.fileName = input.files?.[0]?.name ?? this.fileName;
+    const file = input.files?.[0];
+    if (file) {
+      this.acceptFile(file);
+    }
   }
 
   onFileDrop(event: DragEvent) {
     event.preventDefault();
     const file = event.dataTransfer?.files?.[0];
     if (file) {
-      this.fileName = file.name;
+      this.acceptFile(file);
     }
   }
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
+  }
+
+  get isEditingDraft(): boolean {
+    return !!this.editingId && this.existingStatus === 'draft';
   }
 
   cancel() {
@@ -195,79 +219,222 @@ export class AddMediaContent {
 
   confirmCancel() {
     this.showCancelModal = false;
+    if (this.isEditingDraft && this.editingId) {
+      this.contentApi.delete(this.editingId).subscribe({
+        next: () => {
+          this.toast.success(this.t('add.draftDeletedSuccess'));
+          this.router.navigate(['/media-center/manage']);
+        },
+        error: () => {
+          this.toast.error(this.t('add.draftDeletedError'));
+          this.router.navigate(['/media-center/manage']);
+        },
+      });
+      return;
+    }
     this.router.navigate(['/media-center/manage']);
   }
 
+  private get hasAnyFieldFilled(): boolean {
+    return (
+      this.titleEn.trim() !== '' ||
+      this.titleAr.trim() !== '' ||
+      this.bodyEn.trim() !== '' ||
+      this.bodyAr.trim() !== '' ||
+      this.selectedCategories.size > 0 ||
+      !!this.publishDate ||
+      !!this.expiryDate ||
+      !!this.selectedFile ||
+      !!this.existingFileUrl
+    );
+  }
+
+  private validateDates(): boolean {
+    this.showPublishDatePastError = false;
+    this.showExpiryDateError = false;
+    if (this.publishDate && this.publishDate < this.todayDate) {
+      this.showPublishDatePastError = true;
+      return false;
+    }
+    if (this.expiryDate && this.publishDate && this.expiryDate <= this.publishDate) {
+      this.showExpiryDateError = true;
+      return false;
+    }
+    return true;
+  }
+
+  onPublishDateChange(value: string) {
+    this.publishDate = value;
+    this.showPublishDateError = false;
+    this.validateDates();
+  }
+
+  onExpiryDateChange(value: string) {
+    this.expiryDate = value;
+    this.validateDates();
+  }
+
+  private checkLength(value: string, min: number, max: number): 'short' | 'long' | null {
+    const len = value.trim().length;
+    if (len === 0) return null;
+    if (len < min) return 'short';
+    if (len > max) return 'long';
+    return null;
+  }
+
+  onTitleArChange(value: string) {
+    this.titleAr = value;
+    this.showTitleArError = false;
+    this.titleArLengthError = this.checkLength(value, this.TITLE_MIN_LENGTH, this.TITLE_MAX_LENGTH);
+  }
+
+  onTitleEnChange(value: string) {
+    this.titleEn = value;
+    this.showTitleEnError = false;
+    this.titleEnLengthError = this.checkLength(value, this.TITLE_MIN_LENGTH, this.TITLE_MAX_LENGTH);
+  }
+
+  onBodyArChange(value: string) {
+    this.bodyAr = value;
+    this.showBodyArError = false;
+    this.bodyArLengthError = this.checkLength(value, this.BODY_MIN_LENGTH, this.BODY_MAX_LENGTH);
+  }
+
+  onBodyEnChange(value: string) {
+    this.bodyEn = value;
+    this.showBodyEnError = false;
+    this.bodyEnLengthError = this.checkLength(value, this.BODY_MIN_LENGTH, this.BODY_MAX_LENGTH);
+  }
+
+  private get hasLengthErrors(): boolean {
+    return !!(this.titleArLengthError || this.titleEnLengthError || this.bodyArLengthError || this.bodyEnLengthError);
+  }
+
   saveAsDraft() {
+    if (!this.hasAnyFieldFilled) {
+      this.toast.warning(this.t('add.emptyDraftAlert'));
+      return;
+    }
+    if (!this.validateDates()) {
+      return;
+    }
+    if (this.hasLengthErrors) {
+      return;
+    }
     this.showDraftModal = true;
   }
 
   cancelDraftModal() {
+    if (this.submitting()) return;
     this.showDraftModal = false;
   }
 
   confirmDraft() {
-    this.showDraftModal = false;
+    this.submitting.set(true);
     this.save('draft');
   }
 
   submitForApproval() {
-    if (this.selectedTags.size === 0) {
+    if (!this.publishDate) {
+      this.showPublishDateError = true;
+      return;
+    }
+    if (!this.validateDates()) {
+      return;
+    }
+    if (!this.titleAr.trim()) {
+      this.showTitleArError = true;
+      return;
+    }
+    if (!this.titleEn.trim()) {
+      this.showTitleEnError = true;
+      return;
+    }
+    if (this.selectedCategories.size === 0) {
       this.showCategoryError = true;
+      return;
+    }
+    if (this.contentType === 'News' && !this.bodyAr.trim()) {
+      this.showBodyArError = true;
+      return;
+    }
+    if (this.contentType === 'News' && !this.bodyEn.trim()) {
+      this.showBodyEnError = true;
+      return;
+    }
+    if (!this.selectedFile && !this.existingFileUrl) {
+      this.showFileError = true;
+      return;
+    }
+    if (this.hasLengthErrors) {
       return;
     }
     this.showSubmitModal = true;
   }
 
   cancelSubmitModal() {
+    if (this.submitting()) return;
     this.showSubmitModal = false;
   }
 
   confirmSubmit() {
-    this.showSubmitModal = false;
+    this.submitting.set(true);
     this.save('underReview');
   }
 
   private save(status: ContentStatus) {
-    const bodyParagraphs = this.bodyEn
-      .split(/\n\s*\n/)
-      .map((paragraph) => paragraph.trim())
-      .filter(Boolean);
-
     const today = new Date().toISOString().slice(0, 10);
 
-    const item: ContentItem = {
-      id: this.editingId ?? this.slugify(this.titleEn || 'untitled-content'),
-      title: this.titleEn,
-      titleAr: this.titleAr || undefined,
+    const buildItem = (fileUrl: string | undefined): Partial<ContentItem> => ({
+      titleEn: this.titleEn,
+      titleAr: this.titleAr,
       type: this.contentType,
-      status,
-      tags: Array.from(this.selectedTags),
-      date: this.publishDate,
+      status: status,
+      category: Array.from(this.selectedCategories),
+      publishDate: this.publishDate || undefined,
       expiryDate: this.expiryDate || undefined,
-      bodyParagraphs,
-      bodyAr: this.bodyAr || undefined,
-      sender: this.existingSender ?? 'Current User',
-      sentDate: status === 'underReview' ? today : (this.existingSentDate ?? today),
+      bodyEn: this.bodyEn,
+      bodyAr: this.bodyAr,
+      fileUrl,
+      sender: this.existingSender || 'John Doe',
+      sentDate: this.existingSentDate || today,
+    });
+
+    const isDraft = status === 'draft';
+    const successMsg = this.t(isDraft ? 'add.draftSavedSuccess' : 'add.submitSuccess');
+    const errorMsg = this.t(isDraft ? 'add.draftSavedError' : 'add.submitError');
+
+    const createOrUpdate = (item: Partial<ContentItem>) => {
+      const request = this.editingId
+        ? this.contentApi.update(this.editingId, item)
+        : this.contentApi.create(item);
+
+      request.subscribe({
+        next: () => {
+          this.toast.success(successMsg);
+          this.router.navigate(['/media-center/manage']);
+        },
+        error: () => {
+          this.toast.error(errorMsg);
+          this.submitting.set(false);
+          this.showDraftModal = false;
+          this.showSubmitModal = false;
+        },
+      });
     };
 
-    if (this.editingId) {
-      const index = MEDIA_CONTENT_ITEMS.findIndex((entry) => entry.id === this.editingId);
-      if (index !== -1) {
-        MEDIA_CONTENT_ITEMS[index] = item;
-      }
+    if (this.selectedFile) {
+      this.contentApi.uploadFile(this.selectedFile).subscribe({
+        next: (url) => createOrUpdate(buildItem(url)),
+        error: () => {
+          this.toast.error(this.t('add.uploadError'));
+          this.submitting.set(false);
+          this.showDraftModal = false;
+          this.showSubmitModal = false;
+        },
+      });
     } else {
-      MEDIA_CONTENT_ITEMS.unshift(item);
+      createOrUpdate(buildItem(this.existingFileUrl ?? undefined));
     }
-
-    this.router.navigate(['/media-center/manage']);
-  }
-
-  private slugify(text: string): string {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
   }
 }

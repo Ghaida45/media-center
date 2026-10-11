@@ -1,22 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { NEWS_ARTICLES } from '../../data/news-articles';
+import { ContentItem, ContentType } from '../../data/media-content-items';
+import { ContentApi } from '../../services/content-api';
 import { LanguageService } from '../../services/language.service';
 import { UserRoleService } from '../../services/user-role.service';
-
-interface MediaItem {
-  id?: string;
-  title: string;
-  tags: string[];
-  date: string;
-  isVideo?: boolean;
-  bodyParagraphs?: string[];
-  hidden?: boolean;
-}
+import { ToastService } from '../../services/toast.service';
 
 type TabId = 'news' | 'photos' | 'videos';
-type SortOrder = 'newest' | 'oldest';
+type SortOrder = 'newest' | 'oldest' | 'az' | 'za';
+
+const TAB_TO_TYPE: Record<TabId, ContentType> = {
+  news: 'News',
+  photos: 'Photo',
+  videos: 'Video',
+};
 
 @Component({
   imports: [RouterLink, FormsModule],
@@ -24,7 +22,10 @@ type SortOrder = 'newest' | 'oldest';
   styleUrl: './media-center.css',
   templateUrl: './media-center.html',
 })
-export class MediaCenter {
+export class MediaCenter implements OnInit {
+  private readonly contentApi = inject(ContentApi);
+  private readonly toast = inject(ToastService);
+
   constructor(
     private readonly router: Router,
     readonly userRoleService: UserRoleService,
@@ -37,72 +38,45 @@ export class MediaCenter {
 
   activeTab: TabId = 'news';
   sortOrder: SortOrder = 'newest';
-  activeTagFilters = new Set<string>();
+  activeCategoryFilters = new Set<string>();
   searchQuery = '';
   visibleCount = 3;
-  openPhoto: MediaItem | null = null;
-  openVideo: MediaItem | null = null;
+  openPhoto: ContentItem | null = null;
+  openVideo: ContentItem | null = null;
   isAdvancedFilterOpen = false;
   isSortOpen = false;
   dateFrom = '';
   dateTo = '';
+  loading = signal(true);
 
-  readonly allTags = ['SDAIA', 'NDMO', 'PDPL'];
-  readonly contentStatuses = ['Published', 'Hidden'];
+  readonly allCategories = ['SDAIA', 'NDMO', 'PDPL'];
+  readonly contentStatuses = ['Published', 'Hidden', 'Approved', 'Expired'];
   activeStatusFilters = new Set<string>();
 
-  readonly demoVideoUrl =
-    'https://dgp.sdaia.gov.sa/wps/wcm/connect/6c82404a-daec-4583-8de3-472540655d43/%D8%A2%D9%84%D9%8A%D8%A9+%D8%AA%D9%82%D8%AF%D9%8A%D9%85+%D8%A7%D9%84%D8%B4%D9%83%D9%88%D9%89+%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA+%D8%A3%D8%AD%D9%83%D8%A7%D9%85+%D9%86%D8%B8%D8%A7%D9%85+%D8%AD%D9%85%D8%A7%D9%8A%D8%A9+%D8%A7%D9%84%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA+%D8%A7%D9%84%D8%B4%D8%AE%D8%B5%D9%8A%D8%A9.mp4?MOD=AJPERES&CACHEID=ROOTWORKSPACE-6c82404a-daec-4583-8de3-472540655d43-p-ERbS6';
+  allItems = signal<ContentItem[]>([]);
 
-  news: MediaItem[] = NEWS_ARTICLES;
+  private readonly adminVisibleStatuses = ['approved', 'published', 'hidden', 'expired'];
 
-  photos: MediaItem[] = [
-    { title: 'National Data Governance Platform Launch Event', tags: ['NDMO'], date: '2026-08-03' },
-    { title: 'PDPL Compliance Workshop Gallery', tags: ['PDPL'], date: '2026-08-06' },
-    { title: 'SDAIA Annual Data Forum', tags: ['SDAIA', 'NDMO'], date: '2026-08-10' },
-    { title: 'Signing Ceremony with International Partners', tags: ['SDAIA'], date: '2026-08-13' },
-    { title: 'National Data Center Facility Tour', tags: ['NDMO'], date: '2026-08-16' },
-    { title: 'Personal Data Protection Awareness Campaign', tags: ['PDPL'], date: '2026-08-20' },
-  ];
+  ngOnInit(): void {
+    this.contentApi.getAll().subscribe({
+      next: (rows) => {
+        const isAdmin = this.userRoleService.role() === 'admin';
+        this.allItems.set(
+          rows.filter((item) => (isAdmin ? this.adminVisibleStatuses.includes(item.status) : item.status === 'published')),
+        );
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
+  }
 
-  videos: MediaItem[] = [
-    {
-      title: 'Speech by the Office Head at the National Data Governance Conference',
-      tags: ['NDMO'],
-      date: '2026-08-12',
-      isVideo: true,
-    },
-    {
-      title: 'Explaining the Personal Data Protection System',
-      tags: ['PDPL'],
-      date: '2026-08-18',
-      isVideo: true,
-    },
-    {
-      title: 'Virtual Tour of the National Data Center',
-      tags: ['NDMO'],
-      date: '2026-08-06',
-      isVideo: true,
-    },
-    {
-      title: 'SDAIA Leadership Panel on Data Governance',
-      tags: ['SDAIA'],
-      date: '2026-08-14',
-      isVideo: true,
-    },
-    {
-      title: 'How to Register on the National Data Governance Platform',
-      tags: ['NDMO', 'PDPL'],
-      date: '2026-08-19',
-      isVideo: true,
-    },
-    {
-      title: 'Highlights from the Data Governance Forum 2026',
-      tags: ['SDAIA', 'NDMO'],
-      date: '2026-08-16',
-      isVideo: true,
-    },
-  ];
+  displayTitle(item: ContentItem): string {
+    return (this.languageService.lang() === 'ar' && item.titleAr ? item.titleAr : item.titleEn) ?? '';
+  }
+
+  displayBody(item: ContentItem): string {
+    return (this.languageService.lang() === 'ar' && item.bodyAr ? item.bodyAr : item.bodyEn) ?? '';
+  }
 
   setActiveTab(tab: TabId) {
     this.activeTab = tab;
@@ -118,17 +92,24 @@ export class MediaCenter {
     this.isSortOpen = !this.isSortOpen;
   }
 
-  toggleTagFilter(tag: string) {
-    if (this.activeTagFilters.has(tag)) {
-      this.activeTagFilters.delete(tag);
+  readonly sortOrderKeys: Record<SortOrder, string> = {
+    newest: 'media.sortNewest',
+    oldest: 'media.sortOldest',
+    az: 'media.sortAZ',
+    za: 'media.sortZA',
+  };
+
+  toggleCategoryFilter(category: string) {
+    if (this.activeCategoryFilters.has(category)) {
+      this.activeCategoryFilters.delete(category);
     } else {
-      this.activeTagFilters.add(tag);
+      this.activeCategoryFilters.add(category);
     }
     this.visibleCount = 3;
   }
 
-  isTagFilterActive(tag: string) {
-    return this.activeTagFilters.has(tag);
+  isCategoryFilterActive(category: string) {
+    return this.activeCategoryFilters.has(category);
   }
 
   toggleStatusFilter(status: string) {
@@ -153,7 +134,7 @@ export class MediaCenter {
   }
 
   clearAdvancedFilter() {
-    this.activeTagFilters.clear();
+    this.activeCategoryFilters.clear();
     this.activeStatusFilters.clear();
     this.dateFrom = '';
     this.dateTo = '';
@@ -169,7 +150,7 @@ export class MediaCenter {
     this.visibleCount += 3;
   }
 
-  openPhotoLightbox(item: MediaItem) {
+  openPhotoLightbox(item: ContentItem) {
     if (this.activeTab === 'photos') {
       this.openPhoto = item;
     }
@@ -179,7 +160,7 @@ export class MediaCenter {
     this.openPhoto = null;
   }
 
-  openVideoLightbox(item: MediaItem) {
+  openVideoLightbox(item: ContentItem) {
     if (this.activeTab === 'videos') {
       this.openVideo = item;
     }
@@ -195,9 +176,10 @@ export class MediaCenter {
     video.pause();
   }
 
-  itemPendingVisibilityChange: MediaItem | null = null;
+  itemPendingVisibilityChange: ContentItem | null = null;
+  visibilityChangeProcessing = signal(false);
 
-  toggleHidden(item: MediaItem, event: Event) {
+  toggleHidden(item: ContentItem, event: Event) {
     event.stopPropagation();
     this.itemPendingVisibilityChange = item;
   }
@@ -207,13 +189,26 @@ export class MediaCenter {
   }
 
   confirmVisibilityChange() {
-    if (!this.itemPendingVisibilityChange) return;
-    this.itemPendingVisibilityChange.hidden = !this.itemPendingVisibilityChange.hidden;
-    this.itemPendingVisibilityChange = null;
+    const item = this.itemPendingVisibilityChange;
+    if (!item) return;
+    const nextStatus = item.status === 'published' ? 'hidden' : 'published';
+    this.visibilityChangeProcessing.set(true);
+    this.contentApi.update(item.id, { status: nextStatus }).subscribe({
+      next: () => {
+        item.status = nextStatus;
+        this.visibilityChangeProcessing.set(false);
+        this.itemPendingVisibilityChange = null;
+        this.toast.success(this.t(nextStatus === 'hidden' ? 'media.hideSuccess' : 'media.unhideSuccess'));
+      },
+      error: () => {
+        this.visibilityChangeProcessing.set(false);
+        this.toast.error(this.t(nextStatus === 'hidden' ? 'media.hideError' : 'media.unhideError'));
+      },
+    });
   }
 
-  onCardClick(item: MediaItem) {
-    if (this.activeTab === 'news' && item.id) {
+  onCardClick(item: ContentItem) {
+    if (this.activeTab === 'news') {
       this.router.navigate(['/media-center', item.id]);
     } else if (this.activeTab === 'photos') {
       this.openPhotoLightbox(item);
@@ -222,46 +217,43 @@ export class MediaCenter {
     }
   }
 
-  private get currentItems(): MediaItem[] {
-    switch (this.activeTab) {
-      case 'news':
-        return this.news;
-      case 'photos':
-        return this.photos;
-      case 'videos':
-        return this.videos;
-      default:
-        return this.news;
-    }
+  private get currentItems(): ContentItem[] {
+    const type = TAB_TO_TYPE[this.activeTab];
+    return this.allItems().filter((item) => item.type === type);
   }
 
-  get filteredItems(): MediaItem[] {
+  get filteredItems(): ContentItem[] {
     const query = this.searchQuery.trim().toLowerCase();
 
     const isAdmin = this.userRoleService.role() === 'admin';
 
     const filtered = this.currentItems.filter((item) => {
-      const matchesVisibility = isAdmin || !item.hidden;
-      const matchesTags =
-        this.activeTagFilters.size === 0 || item.tags.some((tag) => this.activeTagFilters.has(tag));
+      const matchesCategories =
+        this.activeCategoryFilters.size === 0 || item.category.some((category) => this.activeCategoryFilters.has(category));
       const matchesStatus =
         !isAdmin ||
         this.activeStatusFilters.size === 0 ||
-        (this.activeStatusFilters.has('Published') && !item.hidden) ||
-        (this.activeStatusFilters.has('Hidden') && !!item.hidden);
-      const matchesSearch = !query || item.title.toLowerCase().includes(query);
-      const matchesFrom = !this.dateFrom || item.date >= this.dateFrom;
-      const matchesTo = !this.dateTo || item.date <= this.dateTo;
-      return matchesVisibility && matchesTags && matchesStatus && matchesSearch && matchesFrom && matchesTo;
+        (this.activeStatusFilters.has('Published') && item.status === 'published') ||
+        (this.activeStatusFilters.has('Hidden') && item.status === 'hidden') ||
+        (this.activeStatusFilters.has('Approved') && item.status === 'approved') ||
+        (this.activeStatusFilters.has('Expired') && item.status === 'expired');
+      const matchesSearch = !query || this.displayTitle(item).toLowerCase().includes(query);
+      const matchesFrom = !this.dateFrom || (item.publishDate ?? '') >= this.dateFrom;
+      const matchesTo = !this.dateTo || (item.publishDate ?? '') <= this.dateTo;
+      return matchesCategories && matchesStatus && matchesSearch && matchesFrom && matchesTo;
     });
 
     return filtered.sort((a, b) => {
-      const diff = new Date(a.date).getTime() - new Date(b.date).getTime();
+      if (this.sortOrder === 'az' || this.sortOrder === 'za') {
+        const cmp = this.displayTitle(a).localeCompare(this.displayTitle(b));
+        return this.sortOrder === 'az' ? cmp : -cmp;
+      }
+      const diff = new Date(a.publishDate ?? 0).getTime() - new Date(b.publishDate ?? 0).getTime();
       return this.sortOrder === 'newest' ? -diff : diff;
     });
   }
 
-  get visibleItems(): MediaItem[] {
+  get visibleItems(): ContentItem[] {
     return this.filteredItems.slice(0, this.visibleCount);
   }
 
@@ -269,7 +261,25 @@ export class MediaCenter {
     return this.visibleCount < this.filteredItems.length;
   }
 
-  formatDate(date: string): string {
+  readonly cardStatusLabelKeys: Partial<Record<ContentItem['status'], string>> = {
+    published: 'media.published',
+    hidden: 'media.hiddenStatus',
+    approved: 'media.approvedStatus',
+    expired: 'media.expiredStatus',
+  };
+
+  cardStatusLabel(item: ContentItem): string {
+    return this.t(this.cardStatusLabelKeys[item.status] ?? 'media.hiddenStatus');
+  }
+
+  cardStatusClass(item: ContentItem): string {
+    if (item.status === 'expired') return 'is-expired';
+    if (item.status === 'published') return '';
+    return 'is-hidden';
+  }
+
+  formatDate(date: string | undefined): string {
+    if (!date) return '';
     const locale = this.languageService.lang() === 'ar' ? 'ar-SA' : 'en-US';
     return new Date(date).toLocaleDateString(locale, {
       day: 'numeric',
@@ -278,7 +288,14 @@ export class MediaCenter {
     });
   }
 
+  readonly statusFilterLabelKeys: Record<string, string> = {
+    Published: 'media.published',
+    Hidden: 'media.hiddenStatus',
+    Approved: 'media.approvedStatus',
+    Expired: 'media.expiredStatus',
+  };
+
   statusFilterLabel(status: string): string {
-    return status === 'Published' ? this.t('media.published') : this.t('media.hiddenStatus');
+    return this.t(this.statusFilterLabelKeys[status]);
   }
 }

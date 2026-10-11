@@ -16,6 +16,14 @@
             {{ t('review.title') }}
         </h2>
 
+        @if (loading()) {
+        <div class="loading-spinner"></div>
+        } @else if (items().length === 0) {
+        <div class="empty-state">
+            <span class="material-symbols-outlined empty-state-icon">inbox</span>
+            <p class="dgp-text-md">{{ t('review.noContent') }}</p>
+        </div>
+        } @else {
         <div class="review-table-wrapper">
         <table class="review-table">
             <thead>
@@ -30,13 +38,13 @@
             <tbody>
                 @for (item of pagedItems; track item.id) {
                 <tr>
-                    <td>{{ item.title }}</td>
+                    <td>{{ displayTitle(item) }}</td>
                     <td>{{ item.type }}</td>
                     <td>{{ item.sender }}</td>
                     <td>{{ formatDate(item.sentDate) }}</td>
                     <td>
                         <a [routerLink]="['/media-center/review', item.id]"
-                            class="dgp-button secondry outlined sm">{{ t('review.view') }}</a>
+                            class="dgp-button secondry outlined sm view-button">{{ t('review.view') }}</a>
                     </td>
                 </tr>
                 }
@@ -45,7 +53,7 @@
 
         <div class="review-pagination">
             <span class="dgp-text-sm">
-                {{ t('review.showingPrefix') }} {{ rangeStart }} - {{ rangeEnd }} {{ t('review.showingOf') }} {{ items.length }} {{ t('review.showingSuffix') }}
+                {{ t('review.showingPrefix') }} {{ rangeStart }} - {{ rangeEnd }} {{ t('review.showingOf') }} {{ items().length }} {{ t('review.showingSuffix') }}
             </span>
             <div class="review-pagination-buttons">
                 <button type="button" class="dgp-button secondry outlined sm" [disabled]="currentPage === 1"
@@ -55,5 +63,6 @@
             </div>
         </div>
         </div>
+        }
     </div>
 </section>

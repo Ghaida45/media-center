@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'aab7e11eedbff3fb1cf53bf5bb83158a34f5943fdee063f5e848b6156ebaf20f'>;
+  StorageHashBase<'0f3f19794da65a839e08f736fc32434ffe49493eacffd5c22f8b7f814c52e3f3'>;
 export type ExecutionHash =
   ExecutionHashBase<'d00223aca1d0fa7df251209f5bc9bdc542e4fd04b1bb4aabfc4f0121144d1f13'>;
 export type ProfileHash =
@@ -244,15 +244,16 @@ export type FieldOutputTypes = {
   readonly public: {
     readonly ContentItem: {
       readonly id: CodecTypes['pg/text@1']['output'];
-      readonly titleEn: CodecTypes['pg/text@1']['output'];
-      readonly titleAr: CodecTypes['pg/text@1']['output'];
+      readonly titleEn: CodecTypes['pg/text@1']['output'] | null;
+      readonly titleAr: CodecTypes['pg/text@1']['output'] | null;
       readonly type: CodecTypes['pg/text@1']['output'];
       readonly status: CodecTypes['pg/text@1']['output'];
       readonly category: ReadonlyArray<CodecTypes['pg/text@1']['output']>;
-      readonly date: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly publishDate: CodecTypes['pg/timestamptz-string@1']['output'] | null;
       readonly expiryDate: CodecTypes['pg/timestamptz-string@1']['output'] | null;
-      readonly bodyEn: CodecTypes['pg/text@1']['output'];
-      readonly bodyAr: CodecTypes['pg/text@1']['output'];
+      readonly bodyEn: CodecTypes['pg/text@1']['output'] | null;
+      readonly bodyAr: CodecTypes['pg/text@1']['output'] | null;
+      readonly fileUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly rejectionReason: CodecTypes['pg/text@1']['output'] | null;
       readonly sender: CodecTypes['pg/text@1']['output'];
       readonly sentDate: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -263,15 +264,16 @@ export type FieldInputTypes = {
   readonly public: {
     readonly ContentItem: {
       readonly id: CodecTypes['pg/text@1']['input'];
-      readonly titleEn: CodecTypes['pg/text@1']['input'];
-      readonly titleAr: CodecTypes['pg/text@1']['input'];
+      readonly titleEn: CodecTypes['pg/text@1']['input'] | null;
+      readonly titleAr: CodecTypes['pg/text@1']['input'] | null;
       readonly type: CodecTypes['pg/text@1']['input'];
       readonly status: CodecTypes['pg/text@1']['input'];
       readonly category: ReadonlyArray<CodecTypes['pg/text@1']['input']>;
-      readonly date: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly publishDate: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly expiryDate: CodecTypes['pg/timestamptz-string@1']['input'] | null;
-      readonly bodyEn: CodecTypes['pg/text@1']['input'];
-      readonly bodyAr: CodecTypes['pg/text@1']['input'];
+      readonly bodyEn: CodecTypes['pg/text@1']['input'] | null;
+      readonly bodyAr: CodecTypes['pg/text@1']['input'] | null;
+      readonly fileUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly rejectionReason: CodecTypes['pg/text@1']['input'] | null;
       readonly sender: CodecTypes['pg/text@1']['input'];
       readonly sentDate: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -281,18 +283,19 @@ export type FieldInputTypes = {
 export type StorageColumnTypes = {
   readonly public: {
     readonly contentItem: {
-      readonly bodyAr: CodecTypes['pg/text@1']['output'];
-      readonly bodyEn: CodecTypes['pg/text@1']['output'];
+      readonly bodyAr: CodecTypes['pg/text@1']['output'] | null;
+      readonly bodyEn: CodecTypes['pg/text@1']['output'] | null;
       readonly category: ReadonlyArray<CodecTypes['pg/text@1']['output']>;
-      readonly date: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly expiryDate: CodecTypes['pg/timestamptz-string@1']['output'] | null;
+      readonly fileUrl: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/text@1']['output'];
+      readonly publishDate: CodecTypes['pg/timestamptz-string@1']['output'] | null;
       readonly rejectionReason: CodecTypes['pg/text@1']['output'] | null;
       readonly sender: CodecTypes['pg/text@1']['output'];
       readonly sentDate: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly status: CodecTypes['pg/text@1']['output'];
-      readonly titleAr: CodecTypes['pg/text@1']['output'];
-      readonly titleEn: CodecTypes['pg/text@1']['output'];
+      readonly titleAr: CodecTypes['pg/text@1']['output'] | null;
+      readonly titleEn: CodecTypes['pg/text@1']['output'] | null;
       readonly type: CodecTypes['pg/text@1']['output'];
     };
   };
@@ -300,18 +303,19 @@ export type StorageColumnTypes = {
 export type StorageColumnInputTypes = {
   readonly public: {
     readonly contentItem: {
-      readonly bodyAr: CodecTypes['pg/text@1']['input'];
-      readonly bodyEn: CodecTypes['pg/text@1']['input'];
+      readonly bodyAr: CodecTypes['pg/text@1']['input'] | null;
+      readonly bodyEn: CodecTypes['pg/text@1']['input'] | null;
       readonly category: ReadonlyArray<CodecTypes['pg/text@1']['input']>;
-      readonly date: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly expiryDate: CodecTypes['pg/timestamptz-string@1']['input'] | null;
+      readonly fileUrl: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/text@1']['input'];
+      readonly publishDate: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly rejectionReason: CodecTypes['pg/text@1']['input'] | null;
       readonly sender: CodecTypes['pg/text@1']['input'];
       readonly sentDate: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly status: CodecTypes['pg/text@1']['input'];
-      readonly titleAr: CodecTypes['pg/text@1']['input'];
-      readonly titleEn: CodecTypes['pg/text@1']['input'];
+      readonly titleAr: CodecTypes['pg/text@1']['input'] | null;
+      readonly titleEn: CodecTypes['pg/text@1']['input'] | null;
       readonly type: CodecTypes['pg/text@1']['input'];
     };
   };
@@ -320,15 +324,16 @@ export type StorageColumnInputTypes = {
 export namespace Models {
   export type public_ContentItem = {
     id: CodecTypes['pg/text@1']['output'];
-    titleEn: CodecTypes['pg/text@1']['output'];
-    titleAr: CodecTypes['pg/text@1']['output'];
+    titleEn: CodecTypes['pg/text@1']['output'] | null;
+    titleAr: CodecTypes['pg/text@1']['output'] | null;
     type: CodecTypes['pg/text@1']['output'];
     status: CodecTypes['pg/text@1']['output'];
     category: ReadonlyArray<CodecTypes['pg/text@1']['output']>;
-    date: CodecTypes['pg/timestamptz-string@1']['output'];
+    publishDate: CodecTypes['pg/timestamptz-string@1']['output'] | null;
     expiryDate: CodecTypes['pg/timestamptz-string@1']['output'] | null;
-    bodyEn: CodecTypes['pg/text@1']['output'];
-    bodyAr: CodecTypes['pg/text@1']['output'];
+    bodyEn: CodecTypes['pg/text@1']['output'] | null;
+    bodyAr: CodecTypes['pg/text@1']['output'] | null;
+    fileUrl: CodecTypes['pg/text@1']['output'] | null;
     rejectionReason: CodecTypes['pg/text@1']['output'] | null;
     sender: CodecTypes['pg/text@1']['output'];
     sentDate: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -370,12 +375,12 @@ type ContractBase = Omit<
                 readonly titleEn: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
                 readonly titleAr: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
                 readonly type: {
                   readonly nativeType: 'text';
@@ -391,11 +396,15 @@ type ContractBase = Omit<
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', readonly []>;
+                  };
                 };
-                readonly date: {
+                readonly publishDate: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-string@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
                 readonly expiryDate: {
                   readonly nativeType: 'timestamptz';
@@ -405,12 +414,17 @@ type ContractBase = Omit<
                 readonly bodyEn: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
                 readonly bodyAr: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
+                };
+                readonly fileUrl: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                 };
                 readonly rejectionReason: {
                   readonly nativeType: 'text';
@@ -460,11 +474,11 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly titleEn: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly titleAr: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly type: {
@@ -480,8 +494,8 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
                 readonly many: true;
               };
-              readonly date: {
-                readonly nullable: false;
+              readonly publishDate: {
+                readonly nullable: true;
                 readonly type: {
                   readonly kind: 'scalar';
                   readonly codecId: 'pg/timestamptz-string@1';
@@ -495,11 +509,15 @@ type ContractBase = Omit<
                 };
               };
               readonly bodyEn: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly bodyAr: {
-                readonly nullable: false;
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fileUrl: {
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly rejectionReason: {
@@ -529,10 +547,11 @@ type ContractBase = Omit<
                 readonly type: { readonly column: 'type' };
                 readonly status: { readonly column: 'status' };
                 readonly category: { readonly column: 'category' };
-                readonly date: { readonly column: 'date' };
+                readonly publishDate: { readonly column: 'publishDate' };
                 readonly expiryDate: { readonly column: 'expiryDate' };
                 readonly bodyEn: { readonly column: 'bodyEn' };
                 readonly bodyAr: { readonly column: 'bodyAr' };
+                readonly fileUrl: { readonly column: 'fileUrl' };
                 readonly rejectionReason: { readonly column: 'rejectionReason' };
                 readonly sender: { readonly column: 'sender' };
                 readonly sentDate: { readonly column: 'sentDate' };

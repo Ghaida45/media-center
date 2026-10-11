@@ -16,14 +16,14 @@
           "ContentItem": {
             "fields": {
               "bodyAr": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "bodyEn": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -37,13 +37,6 @@
                   "kind": "scalar"
                 }
               },
-              "date": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
               "expiryDate": {
                 "nullable": true,
                 "type": {
@@ -51,10 +44,24 @@
                   "kind": "scalar"
                 }
               },
+              "fileUrl": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "publishDate": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
                   "kind": "scalar"
                 }
               },
@@ -87,14 +94,14 @@
                 }
               },
               "titleAr": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "titleEn": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -120,14 +127,17 @@
                 "category": {
                   "column": "category"
                 },
-                "date": {
-                  "column": "date"
-                },
                 "expiryDate": {
                   "column": "expiryDate"
                 },
+                "fileUrl": {
+                  "column": "fileUrl"
+                },
                 "id": {
                   "column": "id"
+                },
+                "publishDate": {
+                  "column": "publishDate"
                 },
                 "rejectionReason": {
                   "column": "rejectionReason"
@@ -176,22 +186,21 @@
                 "bodyAr": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
                 },
                 "bodyEn": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
                 },
                 "category": {
                   "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": []
+                  },
                   "many": true,
                   "nativeType": "text",
-                  "nullable": false
-                },
-                "date": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "nativeType": "timestamptz",
                   "nullable": false
                 },
                 "expiryDate": {
@@ -199,10 +208,20 @@
                   "nativeType": "timestamptz",
                   "nullable": true
                 },
+                "fileUrl": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "id": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
+                },
+                "publishDate": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
                 },
                 "rejectionReason": {
                   "codecId": "pg/text@1",
@@ -227,12 +246,12 @@
                 "titleAr": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
                 },
                 "titleEn": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
                 },
                 "type": {
                   "codecId": "pg/text@1",
@@ -255,7 +274,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "aab7e11eedbff3fb1cf53bf5bb83158a34f5943fdee063f5e848b6156ebaf20f"
+    "storageHash": "0f3f19794da65a839e08f736fc32434ffe49493eacffd5c22f8b7f814c52e3f3"
   },
   "execution": {
     "executionHash": "d00223aca1d0fa7df251209f5bc9bdc542e4fd04b1bb4aabfc4f0121144d1f13",

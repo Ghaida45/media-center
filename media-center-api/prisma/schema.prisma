@@ -1,14 +1,15 @@
 model ContentItem {
   id              String    @id @default(uuid())
-  titleEn         String
-  titleAr         String
+  titleEn         String?
+  titleAr         String?
   type            String
   status          String
-  category        String[]
-  date            TimestamptzString
+  category        String[]  @default([])
+  publishDate     TimestamptzString?
   expiryDate      TimestamptzString?
-  bodyEn          String
-  bodyAr          String
+  bodyEn          String?
+  bodyAr          String?
+  fileUrl         String?
   rejectionReason String?
   sender          String
   sentDate        TimestamptzString

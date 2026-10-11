@@ -17,11 +17,15 @@
     <div class="dgp-container">
         <h2 class="dgp-display-lg dgp-weight-semi-bold">{{ t('add.pageTitle') }}</h2>
 
+        @if (loading()) {
+        <div class="loading-spinner"></div>
+        } @else {
         <form class="add-content-form">
             <div class="form-row">
                 <div class="form__control-wrapper form-field">
-                    <label class="dgp-text-sm dgp-weight-medium" for="contentType">{{ t('add.contentType') }} *</label>
-                    <select id="contentType" class="form__control" [(ngModel)]="contentType" name="contentType">
+                    <label class="dgp-text-sm dgp-weight-medium required-label" for="contentType">{{ t('add.contentType') }}</label>
+                    <select id="contentType" class="form__control" [ngModel]="contentType"
+                        (ngModelChange)="onContentTypeChange($event)" name="contentType">
                         <option value="News">{{ t('add.optionNews') }}</option>
                         <option value="Photo">{{ t('add.optionPhoto') }}</option>
                         <option value="Video">{{ t('add.optionVideo') }}</option>
@@ -29,39 +33,70 @@
                 </div>
 
                 <div class="form__control-wrapper form-field">
-                    <label class="dgp-text-sm dgp-weight-medium" for="publishDate">{{ t('add.publishDate') }} *</label>
-                    <input type="date" id="publishDate" class="form__control" [(ngModel)]="publishDate"
+                    <label class="dgp-text-sm dgp-weight-medium required-label" for="publishDate">{{ t('add.publishDate') }}</label>
+                    <input type="date" id="publishDate" class="form__control" [ngModel]="publishDate" [min]="todayDate"
+                        (ngModelChange)="onPublishDateChange($event)"
                         name="publishDate" required />
+                    @if (showPublishDateError) {
+                    <span class="category-error dgp-text-sm">{{ t('add.publishDateError') }}</span>
+                    }
+                    @if (showPublishDatePastError) {
+                    <span class="category-error dgp-text-sm">{{ t('add.publishDatePastError') }}</span>
+                    }
                 </div>
 
                 <div class="form__control-wrapper form-field">
                     <label class="dgp-text-sm dgp-weight-medium" for="expiryDate">{{ t('add.expiryDate') }}</label>
-                    <input type="date" id="expiryDate" class="form__control" [(ngModel)]="expiryDate"
+                    <input type="date" id="expiryDate" class="form__control" [ngModel]="expiryDate" [min]="publishDate"
+                        (ngModelChange)="onExpiryDateChange($event)"
                         name="expiryDate" />
+                    @if (showExpiryDateError) {
+                    <span class="category-error dgp-text-sm">{{ t('add.expiryDateError') }}</span>
+                    }
                 </div>
             </div>
 
             <div class="form__control-wrapper form-field">
-                <label class="dgp-text-sm dgp-weight-medium" for="titleAr">{{ titleArabicLabel }}</label>
-                <input type="text" id="titleAr" class="form__control"
-                    [placeholder]="titleArPlaceholder" [(ngModel)]="titleAr"
+                <label class="dgp-text-sm dgp-weight-medium required-label" for="titleAr">{{ t('add.titleArLabel' + contentType) }}</label>
+                <input type="text" id="titleAr" class="form__control" [maxlength]="TITLE_MAX_LENGTH"
+                    [placeholder]="t('add.titleArPlaceholder' + contentType)" [ngModel]="titleAr"
+                    (ngModelChange)="onTitleArChange($event)"
                     name="titleAr" />
+                @if (showTitleArError) {
+                <span class="category-error dgp-text-sm">{{ t('add.titleArError') }}</span>
+                }
+                @if (titleArLengthError === 'short') {
+                <span class="category-error dgp-text-sm">{{ t('add.titleTooShortError') }}</span>
+                }
+                @if (titleArLengthError === 'long') {
+                <span class="category-error dgp-text-sm">{{ t('add.titleTooLongError') }}</span>
+                }
             </div>
 
             <div class="form__control-wrapper form-field">
-                <label class="dgp-text-sm dgp-weight-medium" for="titleEn">{{ titleEnglishLabel }}</label>
-                <input type="text" id="titleEn" class="form__control"
-                    [placeholder]="titleEnPlaceholder" [(ngModel)]="titleEn"
+                <label class="dgp-text-sm dgp-weight-medium required-label" for="titleEn">{{ t('add.titleEnLabel' + contentType) }}</label>
+                <input type="text" id="titleEn" class="form__control" [maxlength]="TITLE_MAX_LENGTH"
+                    [placeholder]="t('add.titleEnPlaceholder' + contentType)" [ngModel]="titleEn"
+                    (ngModelChange)="onTitleEnChange($event)"
                     name="titleEn" required />
+                @if (showTitleEnError) {
+                <span class="category-error dgp-text-sm">{{ t('add.titleEnError') }}</span>
+                }
+                @if (titleEnLengthError === 'short') {
+                <span class="category-error dgp-text-sm">{{ t('add.titleTooShortError') }}</span>
+                }
+                @if (titleEnLengthError === 'long') {
+                <span class="category-error dgp-text-sm">{{ t('add.titleTooLongError') }}</span>
+                }
             </div>
 
             <div class="form-field">
-                <span class="dgp-text-sm dgp-weight-medium">{{ t('add.categories') }} *</span>
+                <span class="dgp-text-sm dgp-weight-medium required-label">{{ t('add.categories') }}</span>
                 <div class="category-checkboxes">
-                    @for (tag of allTags; track tag) {
+                    @for (category of allCategories; track category) {
                     <label class="category-checkbox">
-                        <input type="checkbox" [checked]="isTagSelected(tag)" (change)="toggleTag(tag)" />
-                        <span>{{ tag }}</span>
+                        <input type="checkbox" [checked]="isCategorySelected(category)" (change)="toggleCategory(category)" />
+                        <span>{{ category }}</span>
                     </label>
                     }
                 </div>
@@ -74,33 +109,68 @@
 
             @if (contentType === 'News') {
             <div class="form-field">
-                <label class="dgp-text-sm dgp-weight-medium" for="bodyAr">{{ bodyArabicLabel }}</label>
-                <textarea id="bodyAr" class="form__control add-content-textarea" dir="rtl"
-                    [placeholder]="bodyArPlaceholder" [(ngModel)]="bodyAr"
+                <label class="dgp-text-sm dgp-weight-medium required-label" for="bodyAr">{{ t('add.bodyArLabel' + contentType) }}</label>
+                <textarea id="bodyAr" class="form__control add-content-textarea" [maxlength]="BODY_MAX_LENGTH"
+                    [placeholder]="t('add.bodyArPlaceholder' + contentType)" [ngModel]="bodyAr"
+                    (ngModelChange)="onBodyArChange($event)"
                     name="bodyAr"></textarea>
+                @if (showBodyArError) {
+                <span class="category-error dgp-text-sm">{{ t('add.bodyArError') }}</span>
+                }
+                @if (bodyArLengthError === 'short') {
+                <span class="category-error dgp-text-sm">{{ t('add.bodyTooShortError') }}</span>
+                }
+                @if (bodyArLengthError === 'long') {
+                <span class="category-error dgp-text-sm">{{ t('add.bodyTooLongError') }}</span>
+                }
             </div>
 
             <div class="form-field">
-                <label class="dgp-text-sm dgp-weight-medium" for="bodyEn">{{ bodyEnglishLabel }}</label>
-                <textarea id="bodyEn" class="form__control add-content-textarea"
-                    [placeholder]="bodyEnPlaceholder" [(ngModel)]="bodyEn"
+                <label class="dgp-text-sm dgp-weight-medium required-label" for="bodyEn">{{ t('add.bodyEnLabel' + contentType) }}</label>
+                <textarea id="bodyEn" class="form__control add-content-textarea" [maxlength]="BODY_MAX_LENGTH"
+                    [placeholder]="t('add.bodyEnPlaceholder' + contentType)" [ngModel]="bodyEn"
+                    (ngModelChange)="onBodyEnChange($event)"
                     name="bodyEn" required></textarea>
+                @if (showBodyEnError) {
+                <span class="category-error dgp-text-sm">{{ t('add.bodyEnError') }}</span>
+                }
+                @if (bodyEnLengthError === 'short') {
+                <span class="category-error dgp-text-sm">{{ t('add.bodyTooShortError') }}</span>
+                }
+                @if (bodyEnLengthError === 'long') {
+                <span class="category-error dgp-text-sm">{{ t('add.bodyTooLongError') }}</span>
+                }
             </div>
             }
 
             <div class="form-field">
-                <span class="dgp-text-sm dgp-weight-medium">{{ fileFieldLabel }} {{ fileRequired ? '*' : '' }}</span>
+                <span class="dgp-text-sm dgp-weight-medium required-label">{{ t('add.fileFieldLabel' + contentType) }}</span>
                 <div class="file-dropzone" (drop)="onFileDrop($event)" (dragover)="onDragOver($event)">
+                    @if (filePreviewUrl) {
+                    <div class="file-preview">
+                        @if (contentType === 'Video') {
+                        <video [src]="filePreviewUrl" controls class="file-preview-media"></video>
+                        } @else {
+                        <img [src]="filePreviewUrl" alt="" class="file-preview-media" />
+                        }
+                    </div>
+                    }
                     <span class="material-symbols-outlined">upload</span>
                     @if (fileName) {
                     <span class="dgp-text-sm dgp-weight-medium">{{ fileName }}</span>
                     } @else {
                     <span class="dgp-text-sm">{{ t('add.dragDrop') }}</span>
                     }
-                    <span class="dgp-text-sm file-hint">{{ fileAcceptHint }}</span>
-                    <input type="file" id="mediaFile" class="file-input" [attr.aria-label]="fileFieldLabel"
+                    <span class="dgp-text-sm file-hint">{{ t('add.fileAcceptHint' + contentType) }}</span>
+                    <input type="file" id="mediaFile" class="file-input" [attr.aria-label]="t('add.fileFieldLabel' + contentType)"
                         [accept]="fileAccept" (change)="onFileSelected($event)" />
                 </div>
+                @if (showFileError) {
+                <span class="category-error dgp-text-sm">{{ t('add.fileError') }}</span>
+                }
+                @if (showFileSizeError) {
+                <span class="category-error dgp-text-sm">{{ t('add.fileSizeError') }}</span>
+                }
             </div>
 
             <div class="add-content-actions">
@@ -109,6 +179,7 @@
                 <button type="button" class="dgp-button secondry transparent" (click)="cancel()">{{ t('add.cancel') }}</button>
             </div>
         </form>
+        }
     </div>
 </section>
 
@@ -124,8 +195,14 @@
             {{ t('add.sendForApprovalDesc') }}
         </p>
         <div class="form-modal-actions">
-            <button type="button" class="dgp-button secondry outlined" (click)="cancelSubmitModal()">{{ t('add.cancel') }}</button>
-            <button type="button" class="dgp-button success" (click)="confirmSubmit()">{{ t('add.confirmSend') }}</button>
+            <button type="button" class="dgp-button secondry outlined" [disabled]="submitting()" (click)="cancelSubmitModal()">{{ t('add.cancel') }}</button>
+            <button type="button" class="dgp-button success" [disabled]="submitting()" (click)="confirmSubmit()">
+                @if (submitting()) {
+                <span class="button-spinner"></span>
+                } @else {
+                {{ t('add.confirmSend') }}
+                }
+            </button>
         </div>
     </div>
 </div>
@@ -143,8 +220,14 @@
             {{ t('add.saveAsDraftDesc') }}
         </p>
         <div class="form-modal-actions">
-            <button type="button" class="dgp-button secondry outlined" (click)="cancelDraftModal()">{{ t('add.cancel') }}</button>
-            <button type="button" class="dgp-button warning" (click)="confirmDraft()">{{ t('add.confirmSave') }}</button>
+            <button type="button" class="dgp-button secondry outlined" [disabled]="submitting()" (click)="cancelDraftModal()">{{ t('add.cancel') }}</button>
+            <button type="button" class="dgp-button warning" [disabled]="submitting()" (click)="confirmDraft()">
+                @if (submitting()) {
+                <span class="button-spinner"></span>
+                } @else {
+                {{ t('add.confirmSave') }}
+                }
+            </button>
         </div>
     </div>
 </div>
@@ -157,9 +240,9 @@
         <div class="form-modal-icon error">
             <span class="material-symbols-outlined">close</span>
         </div>
-        <h3 class="dgp-text-lg dgp-weight-bold">{{ t('add.cancelAdditionTitle') }}</h3>
+        <h3 class="dgp-text-lg dgp-weight-bold">{{ t(isEditingDraft ? 'add.deleteDraftTitle' : 'add.cancelAdditionTitle') }}</h3>
         <p class="dgp-text-sm form-modal-description">
-            {{ t('add.cancelAdditionDesc') }}
+            {{ t(isEditingDraft ? 'add.deleteDraftDesc' : 'add.cancelAdditionDesc') }}
         </p>
         <div class="form-modal-actions">
             <button type="button" class="dgp-button secondry outlined" (click)="cancelCancelModal()">{{ t('add.back') }}</button>
